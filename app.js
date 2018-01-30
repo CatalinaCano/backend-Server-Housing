@@ -4,10 +4,18 @@ var express = require('express');
 
 // Libreria Mongoose para conectarnos a mongo
 var mongoose = require('mongoose');
-
+//midleware para convertir un objeto de js
+var bodyParser = require('body-parser');
 
 // Inicializar Variables
 var app = express();
+
+
+//body parser
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
 
 // Importacion de las rutas
 var administradorRoutes = require('./routes/administrador');
