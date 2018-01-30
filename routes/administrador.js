@@ -54,9 +54,10 @@ app.post('/', (req, res) => {
 
             });
         }
-        res.status(200).json({
+        res.status(201).json({
             ok: true,
-            mensaje: 'Admin guardado con exito'
+            mensaje: 'Admin guardado con exito',
+            administradorGuardado: administradorGuardado
         })
 
 
