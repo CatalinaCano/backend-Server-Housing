@@ -8,24 +8,26 @@ var Administrador = require('../models/administrador')
 // Rutas
 app.get('/', (req, res, next) => {
 
-    Administrador.find({}, (err, administradores) => {
-        if (err) {
-            return res
-                .status(500)
+    Administrador.find({},
+            'nombre email role')
+        .exec((err, administradores) => {
+            if (err) {
+                return res
+                    .status(500)
+                    .json({
+                        ok: false,
+                        mensaje: "Error cargando administradores",
+                        errors: err
+                    });
+            }
+            res
+                .status(200)
                 .json({
-                    ok: false,
-                    mensaje: "Error cargando administradores",
-                    errors: err
+                    ok: true,
+                    mensaje: "usuarios correctos",
+                    administradores: administradores
                 });
-        }
-        res
-            .status(200)
-            .json({
-                ok: true,
-                mensaje: "usuarios correctos",
-                administradores: administradores
-            });
-    });
+        });
 
 });
 
