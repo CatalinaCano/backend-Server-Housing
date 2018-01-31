@@ -113,7 +113,31 @@ app.put('/:id', (req, res) => {
 
 });
 
+// Eliminar Administrador
+app.delete('/:id', (req, res) => {
+    var id = req.params.id;
+    Administrador.findByIdAndRemove(id, (err, administradorBorrado) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'error al eliminar administrador',
+                errors: err
 
+            });
+
+        }
+        return res.status(200).json({
+            ok: true,
+            mensaje: 'administrador eliminado correctamente',
+            administradorBorrado: administradorBorrado
+
+        });
+
+
+    });
+
+
+});
 
 
 // Exporatacion para hacer uso de ella en cualquier modulo
