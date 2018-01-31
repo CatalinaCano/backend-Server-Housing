@@ -47,7 +47,7 @@ app.post('/', (req, res) => {
     administrador.save((err, administradorGuardado) => {
         if (err) {
 
-            return res.status(500).json({
+            return res.status(400).json({
                 ok: false,
                 mensaje: 'Error al guardar admin',
                 error: err
@@ -63,6 +63,58 @@ app.post('/', (req, res) => {
 
     });
 });
+
+// Actualizar Usuario
+//id: variable para capturar un usuario
+app.put('/:id', (req, res) => {
+    var id = req.params.id;
+    Administrador.findById(id, (err, administrador) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'fallo al buscar admon',
+                errors: err
+
+            });
+        }
+        if (!administrador) {
+            res.status(400).json({
+                ok: true,
+                mensaje: 'El administrador con id ' + id + ' no existe',
+            })
+        }
+        //listos para actualizar la data
+        var body = req.body;
+        administrador.nombre = body.nombre;
+        administrador.save((err, administradorGuardado) => {
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'error al actualizar el admon',
+                    error: err
+                });
+
+            }
+            administradorGuardado.password = ':)';
+            return res.status(200).json({
+                ok: true,
+                mensaje: 'admin actualizado correctamente',
+                administradorGuardado: administradorGuardado
+
+            });
+
+        });
+
+
+    });
+
+
+
+
+});
+
+
+
 
 // Exporatacion para hacer uso de ella en cualquier modulo
 module.exports = app;
