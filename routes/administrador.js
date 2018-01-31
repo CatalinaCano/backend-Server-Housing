@@ -126,6 +126,20 @@ app.delete('/:id', (req, res) => {
             });
 
         }
+        if (!administradorBorrado) {
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'no existe administrador con ese id ',
+                errors: err
+
+            });
+        }
+
+
+
+
+
+
         return res.status(200).json({
             ok: true,
             mensaje: 'administrador eliminado correctamente',
