@@ -22,11 +22,13 @@ var administradorSchema = new Schema({
     },
     password: { type: String, required: [true, 'Este Campo es Requerido'] },
     role: { type: String, required: [true, 'Este Campo es Requerido'], default: 'ESTUDIANTE_ROLE', enum: rolesValidos }
-});
+
+
+}, { collection: 'administradores' });
 
 administradorSchema.plugin(uniqueValidator, { message: 'Este {PATH} ya esta en uso' });
 
 
 
 // Exportar el esquema Usuario
-module.exports = mongoose.model('administradores', administradorSchema);
+module.exports = mongoose.model('Administrador', administradorSchema);
