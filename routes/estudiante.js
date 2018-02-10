@@ -7,24 +7,33 @@ var Estudiante = require('../models/estudiante');
 
 //Consultar Estudiantes
 app.get('/', (req, res) => {
-    Estudiante.find({}, (err, estudiantes) => {
-        if (err) {
-            return res
-                .status(500)
-                .json({
-                    ok: false,
-                    mensaje: 'Error al consultar estudiantes',
-                    errors: err
+    //Paginacion 
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+
+    Estudiante.find({})
+        .skip(desde)
+        .limit(5)
+        .exec((err, estudiantes) => {
+            if (err) {
+                return res
+                    .status(500)
+                    .json({
+                        ok: false,
+                        mensaje: 'Error al consultar estudiantes',
+                        errors: err
+                    });
+            }
+
+            Estudiante.count({}, (err, total) => {
+                res.status(200).json({
+                    ok: true,
+                    mensaje: 'Consulta de estudiantes exitosa',
+                    estudiantes: estudiantes,
+                    total: total
                 });
-        }
-        return res
-            .status(200)
-            .json({
-                ok: true,
-                mensaje: 'Consulta de estudiantes exitosa',
-                estudiantes: estudiantes
-            });
-    });
+            })
+        });
 });
 
 
