@@ -20,14 +20,14 @@ app.get('/todo/:busqueda', (req, res, next) => {
 
     Promise.all([
             buscarEnEstudiante(busqueda, regex),
-            buscarEnAlojamiento(busqueda, regex)
+            buscarEnAlojamientoDisponibleyAceptado(busqueda, regex)
         ])
         .then(respuestas => {
             res.status(202).json({
                 ok: true,
                 mensaje: 'Petición realizada correctamente',
                 sedes: respuestas[0],
-                sedesCercanas: respuestas[1]
+                alojamientos: respuestas[1]
             }); // Todo se hizo corriendo correctamente
         })
 });
@@ -45,14 +45,13 @@ function buscarEnEstudiante(busqueda, regex) {
     });
 }
 
-function buscarEnAlojamiento(busqueda, regex, desde) {
-
+function buscarEnAlojamientoDisponibleyAceptado(busqueda, regex, desde) {
     return new Promise((resolve, reject) => {
-        Alojamiento.find({}, 'propiedadesAlojamiento.estadoAlojamiento estudiante')
+        Alojamiento.find({ 'propiedadesAlojamiento.estadoAlojamiento': 'Disponible', 'propiedadesAlojamiento.estadoPublicacionAlojamiento': 'Aceptado' })
             .populate('estudiante', 'role email')
             .skip(desde)
             .limit(5)
-            .or([{ 'sedeCercana': regex }, { 'hospedanA': regex }])
+            .or([{ 'sedeCercana': regex }, { 'hospedanA': regex }, { 'propiedadesAlojamiento.tipoVivienda': regex }, { 'propiedadesAlojamiento.tipoHabitacion': regex }])
             .exec((err, alojamientos) => {
                 if (err) {
                     reject('Erro al cargar alojamientos');
@@ -61,9 +60,7 @@ function buscarEnAlojamiento(busqueda, regex, desde) {
                     Alojamiento.count({}, (err, total) => {
                         resolve(alojamientos, total);
                     })
-
                 }
-
             })
     });
 }
