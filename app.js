@@ -18,6 +18,7 @@ app.use(bodyParser.json())
 
 
 // Importacion de las rutas
+var busquedaRoutes = require('./routes/busqueda');
 var estudianteRoutes = require('./routes/estudiante');
 var administradorRoutes = require('./routes/administrador');
 var alojamientoRoutes = require('./routes/alojamiento');
@@ -34,6 +35,7 @@ mongoose.connection.openUri('mongodb://localhost:27017/HousingUD', (err, res) =>
 
 // Rutas
 // Ejecucion de Middleware,  se ejecuta antes de que se resuelvan otras rutas
+app.use('/busqueda', busquedaRoutes);
 app.use('/alojamiento', alojamientoRoutes);
 app.use('/estudiante', estudianteRoutes);
 app.use('/administrador', administradorRoutes);

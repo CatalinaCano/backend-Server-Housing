@@ -7,7 +7,6 @@ var Administrador = require('../models/administrador')
 
 // Rutas
 
-
 //Metodo para obtener consultas
 app.get('/', (req, res, next) => {
 
@@ -152,7 +151,6 @@ app.delete('/:id', (req, res) => {
 
 
 });
-
 
 // Exporatacion para hacer uso de ella en cualquier modulo
 module.exports = app;
