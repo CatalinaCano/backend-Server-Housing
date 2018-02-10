@@ -9,7 +9,13 @@ var Alojamiento = require('../models/alojamiento');
 
 //Metodo para obtener  alojamientos
 app.get('/', (req, res) => {
+    //Paginacion 
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+
     Alojamiento.find({})
+        .skip(desde)
+        .limit(5)
         .populate('estudiante', 'role email')
         .exec((err, alojamientos) => {
             if (err) {
@@ -19,12 +25,14 @@ app.get('/', (req, res) => {
                     errors: err
                 });
             }
-            return res.status(200).json({
-                ok: true,
-                mensaje: "Consulta de alojamientos Exitosa",
-                alojamientos: alojamientos
-            });
-
+            Alojamiento.count({}, (err, total) => {
+                res.status(200).json({
+                    ok: true,
+                    mensaje: "Consulta de alojamientos Exitosa",
+                    alojamientos: alojamientos,
+                    total: total
+                });
+            })
         });
 });
 
@@ -331,10 +339,6 @@ app.delete('/:id', (req, res) => {
         });
     });
 });
-
-
-
-
 
 // Exporatacion para hacer uso de ella en cualquier modulo
 module.exports = app;

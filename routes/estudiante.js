@@ -96,8 +96,7 @@ app.put('/:id', (req, res) => {
                 });
 
             }
-            return res
-                .status(200)
+            res.status(200)
                 .json({
                     ok: true,
                     mensaje: "estudiante actualizado correctamente",
@@ -106,11 +105,6 @@ app.put('/:id', (req, res) => {
         });
     });
 });
-
-
-
-
-
 
 // Exporatacion para hacer uso de ella en cualquier modulo
 module.exports = app;
