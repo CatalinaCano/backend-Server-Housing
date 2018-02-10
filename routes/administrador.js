@@ -11,8 +11,13 @@ var Administrador = require('../models/administrador')
 //Metodo para obtener consultas
 app.get('/', (req, res, next) => {
 
-    Administrador.find({},
-            'nombre email role')
+    //Paginacion 
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+
+    Administrador.find({}, 'nombre email role')
+        .skip(desde)
+        .limit(5)
         .exec((err, administradores) => {
             if (err) {
                 return res
@@ -23,13 +28,13 @@ app.get('/', (req, res, next) => {
                         errors: err
                     });
             }
-            res
-                .status(200)
-                .json({
+            Administrador.count({}, (err, total) => {
+                res.status(200).json({
                     ok: true,
                     mensaje: "usuarios correctos",
                     administradores: administradores
                 });
+            })
         });
 
 });
