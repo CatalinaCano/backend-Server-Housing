@@ -5,9 +5,7 @@ var mongoose = require('mongoose');
 // Libreria para crear esquemas
 var Schema = mongoose.Schema;
 
-
 //variable para controlar las respuestas validas
-
 var respuestasValidas = {
     values: ['SI', 'NO', 'si', 'no', 'Si', 'No'],
     message: '{VALUE} no es una respuesta válida'
@@ -66,7 +64,7 @@ var tipoHabitacionValido = {
 };
 
 var clasificacionAlojamientoValido = {
-    values: ['Arriendo', 'Propia', 'Familiar', 'Otra'],
+    values: ['Arrendado', 'Propio', 'Familiar', 'Otro'],
     message: '{VALUE}  no es una clasificacion valida'
 };
 
@@ -119,6 +117,8 @@ var franjasValidas = {
 // Definir el Administrador esquema
 // Funcion que recibe un objeto de js con la configuracion del registro
 var alojamientoSchema = new Schema({
+    //estudianteAnfitrion: { type: Schema.Types.ObjectId, ref: 'Estudiante' },
+    estudiante: { type: Schema.Types.ObjectId, ref: 'Estudiante' },
     propiedadesAlojamiento: {
         tipoVivienda: { type: String, required: [true, ' El tipo de vivienda es requerido'], enum: tipoViviendaValido },
         descripcionAlojamiento: { type: String, required: [true, 'La descripcion del alojamiento es requerida'] },
@@ -210,10 +210,7 @@ var alojamientoSchema = new Schema({
         habitosAlimenticios: { type: String, required: [true, 'Es necesario especificar tipo de alimentacion'], enum: tipoHabitosAlimenticiosValidos },
         consumoDrogas: { type: String, required: [true, 'Es necesario especificar si consumen drogas en su alojamiento'], enum: respuestasValidas },
         consumoAlcohol: { type: String, required: [true, 'Es necesario especificar si consumen alcohol en su alojamiento'], enum: respuestasValidas }
-    },
-
-
-    estudiante: { type: Schema.Types.ObjectId, ref: 'Estudiante' }
+    }
 }, { collection: 'alojamientos' });
 
 

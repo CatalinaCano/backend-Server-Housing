@@ -6,6 +6,29 @@ var app = express(); // Levantar la app
 var Alojamiento = require('../models/alojamiento');
 
 
+
+//Metodo para obtener  alojamientos
+app.get('/', (req, res) => {
+    Alojamiento.find({})
+        .populate('estudiante', 'role email')
+        .exec((err, alojamientos) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: "Error al consultar alojamientos",
+                    errors: err
+                });
+            }
+            return res.status(200).json({
+                ok: true,
+                mensaje: "Consulta de alojamientos Exitosa",
+                alojamientos: alojamientos
+            });
+
+        });
+});
+
+/** 
 //Metodo para obtener  alojamientos
 app.get('/', (req, res) => {
     Alojamiento.find({}, (err, alojamientos) => {
@@ -26,17 +49,16 @@ app.get('/', (req, res) => {
                 alojamientos: alojamientos
             });
     });
-});
+});**/
 
 
-
-
-// Crear Estudiante
-app.post('/', (req, res) => {
+// Crear Alojamiento
+app.post('/:id', (req, res) => {
     var body = req.body;
+    var idEstudiante = req.params.id;
     //Definicion para crear un nuevo usuario
     var alojamiento = new Alojamiento({
-        estudiante: req.estudiante._id,
+        estudiante: idEstudiante,
         propiedadesAlojamiento: {
             tipoVivienda: body.tipoVivienda,
             descripcionAlojamiento: body.descripcionAlojamiento,
@@ -136,33 +158,26 @@ app.post('/', (req, res) => {
             habitosAlimenticios: body.habitosAlimenticios,
             consumoDrogas: body.consumoDrogas,
             consumoAlcohol: body.consumoAlcohol
-        },
-
-
-        estudiante: { type: Schema.Types.Object }
+        }
     });
     //metodo para guardar nuevo usuario
     alojamiento.save((err, alojamientoGuardado) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'Error al Guardar Alojamiento',
+                mensaje: 'Error al crear Alojamiento',
                 error: err
             });
         }
         res.status(201).json({
             ok: true,
-            mensaje: 'Alojamiento Guardado con Éxito',
+            mensaje: 'Alojamiento creado con Éxito',
             alojamientoGuardado: alojamientoGuardado
         });
     });
 });
 
-
-
-
-
-// Actualizar Usuario
+// Actualizar alojamiento
 //id: variable para capturar un usuario
 app.put('/:id', (req, res) => {
     var id = req.params.id;
@@ -289,7 +304,7 @@ app.put('/:id', (req, res) => {
 });
 
 
-// Eliminar Administrador
+// Eliminar Alojamiento
 app.delete('/:id', (req, res) => {
     var id = req.params.id;
     Alojamiento.findByIdAndRemove(id, (err, alojamientoBorrado) => {
