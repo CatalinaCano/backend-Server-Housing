@@ -8,11 +8,11 @@ var app = express(); // Levantar la app
 var Estudiante = require('../models/estudiante');
 var Alojamiento = require('../models/alojamiento');
 
-// Rutas
+// Busqueda por todo
 app.get('/todo/:busqueda', (req, res, next) => {
 
     var busqueda = req.params.busqueda;
-    //Expresion regular para poder buscar
+    //Expresion regular para poder buscar sin que se afecteen mayusculas y minusculas
     var regex = new RegExp(busqueda, 'i');
     var desde = req.query.desde || 0;
     desde = Number(desde);
@@ -31,6 +31,28 @@ app.get('/todo/:busqueda', (req, res, next) => {
             }); // Todo se hizo corriendo correctamente
         })
 });
+
+// Busqueda a nivel de alojamiento
+
+app.get('/alojamientos/:sede/:hospedan/:hospedaje/:habitacion', (req, res) => {
+    var sede = req.params.sede;
+    var hospedan = req.params.hospedan;
+    var hospedaje = req.params.hospedaje;
+    var habitacion = req.params.habitacion;
+
+    Promise.all([
+            buscarEnAlojamientoFiltro(sede, hospedan, hospedaje, habitacion),
+        ])
+        .then(respuestas => {
+            res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente - para el filtro',
+                alojamientos: respuestas[0]
+            }); // Todo se hizo corriendo correctamente
+        })
+});
+
+
 
 
 function buscarEnEstudiante(busqueda, regex) {
@@ -51,7 +73,7 @@ function buscarEnAlojamientoDisponibleyAceptado(busqueda, regex, desde) {
             .populate('estudiante', 'role email')
             .skip(desde)
             .limit(5)
-            .or([{ 'sedeCercana': regex }, { 'hospedanA': regex }, { 'propiedadesAlojamiento.tipoVivienda': regex }, { 'propiedadesAlojamiento.tipoHabitacion': regex }])
+            .or([{ 'sedeCercana': regex }, { 'hospedanA': regex }, { 'tipoVivienda': regex }, { 'tipoHabitacion': regex }])
             .exec((err, alojamientos) => {
                 if (err) {
                     reject('Erro al cargar alojamientos');
@@ -65,5 +87,26 @@ function buscarEnAlojamientoDisponibleyAceptado(busqueda, regex, desde) {
     });
 }
 
+
+function buscarEnAlojamientoFiltro(sede, hospedan, hospedaje, habitacion, desde) {
+    return new Promise((resolve, reject) => {
+        Alojamiento.find({ 'propiedadesAlojamiento.estadoAlojamiento': 'Disponible', 'propiedadesAlojamiento.estadoPublicacionAlojamiento': 'Aceptado' })
+            .populate('estudiante', 'role email')
+            .skip(desde)
+            .limit(5)
+            //.and([{ 'sedeCercana': regex }, { 'hospedanA': regex }, { 'propiedadesAlojamiento.tipoVivienda': regex }, { 'propiedadesAlojamiento.tipoHabitacion': regex }])
+            .and([{ 'sedeCercana': sede }, { 'hospedanA': hospedan }, { 'tipoVivienda': hospedaje }, { 'tipoHabitacion': habitacion }])
+            .exec((err, alojamientos) => {
+                if (err) {
+                    reject('Erro al cargar alojamientos');
+                } else {
+
+                    Alojamiento.count({}, (err, total) => {
+                        resolve(alojamientos, total);
+                    })
+                }
+            })
+    });
+}
 // Exporatacion para hacer uso de ella en cualquier modulo
 module.exports = app;

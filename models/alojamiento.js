@@ -119,10 +119,10 @@ var franjasValidas = {
 var alojamientoSchema = new Schema({
     //estudianteAnfitrion: { type: Schema.Types.ObjectId, ref: 'Estudiante' },
     estudiante: { type: Schema.Types.ObjectId, ref: 'Estudiante' },
+    tipoVivienda: { type: String, required: [true, ' El tipo de vivienda es requerido'], enum: tipoViviendaValido },
+    tipoHabitacion: { type: String, required: [true, 'El tipo de habitacion es requerido'], enum: tipoHabitacionValido },
     propiedadesAlojamiento: {
-        tipoVivienda: { type: String, required: [true, ' El tipo de vivienda es requerido'], enum: tipoViviendaValido },
         descripcionAlojamiento: { type: String, required: [true, 'La descripcion del alojamiento es requerida'] },
-        tipoHabitacion: { type: String, required: [true, 'El tipo de habitacion es requerido'], enum: tipoHabitacionValido },
         clasificacionAlojamiento: { type: String, required: [true, 'La clasificacion del alojamiento es requerida'], enum: clasificacionAlojamientoValido },
         estadoAlojamiento: { type: String, required: [true, 'El estado del alojamiento es requerido'], default: 'Disponible', enum: estadoAlojamientoValido },
         estadoPublicacionAlojamiento: { type: String, required: [true, 'El estado de la publicacion es requerido'], default: 'En estudio', enum: estadoPublicacionAlojamientoValido },

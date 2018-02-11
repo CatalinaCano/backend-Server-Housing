@@ -67,10 +67,10 @@ app.post('/:id', (req, res) => {
     //Definicion para crear un nuevo usuario
     var alojamiento = new Alojamiento({
         estudiante: idEstudiante,
+        tipoVivienda: body.tipoVivienda,
+        tipoHabitacion: body.tipoHabitacion,
         propiedadesAlojamiento: {
-            tipoVivienda: body.tipoVivienda,
             descripcionAlojamiento: body.descripcionAlojamiento,
-            tipoHabitacion: body.tipoHabitacion,
             clasificacionAlojamiento: body.clasificacionAlojamiento,
             estadoAlojamiento: body.estadoAlojamiento,
             estadoPublicacion: body.estadoPublicacion,
@@ -206,9 +206,10 @@ app.put('/:id', (req, res) => {
         }
         //listos para actualizar la data
         var body = req.body;
-        alojamiento.propiedadesAlojamiento.tipoVivienda = body.tipoVivienda;
+        alojamiento.tipoVivienda = body.tipoVivienda;
+        alojamiento.tipoHabitacion = body.tipoHabitacion;
+
         alojamiento.propiedadesAlojamiento.descripcionAlojamiento = body.descripcionAlojamiento;
-        alojamiento.propiedadesAlojamiento.tipoHabitacion = body.tipoHabitacion;
         alojamiento.propiedadesAlojamiento.clasificacionAlojamiento = body.clasificacionAlojamiento;
         alojamiento.propiedadesAlojamiento.estadoAlojamiento = body.estadoAlojamiento;
         alojamiento.propiedadesAlojamiento.estadoPublicacion = body.estadoPublicacion;
