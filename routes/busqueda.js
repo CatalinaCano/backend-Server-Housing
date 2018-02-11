@@ -32,6 +32,30 @@ app.get('/todo/:busqueda', (req, res, next) => {
         })
 });
 
+
+
+// Busqueda de Estadisticas
+app.get('/estadisticas', (req, res, next) => {
+    Promise.all([
+            buscarCantidadAlojamientos(),
+            buscarCantidadAlojamientosDisponibles(),
+            buscarCantidadAlojamientosAceptados(),
+            buscarCantidadAlojamientosPorAprobar()
+        ])
+        .then(respuestas => {
+            res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente-estadisticas',
+                cantidadAlojamientos: respuestas[0],
+                alojamientosDisponibles: respuestas[1],
+                alojamientosAceptados: respuestas[2],
+                alojamientosPorAprobar: respuestas[3]
+            }); // Todo se hizo corriendo correctamente
+        })
+});
+
+
+
 // Busqueda a nivel de alojamiento
 
 app.get('/alojamientos/:sede/:hospedan/:hospedaje/:habitacion', (req, res) => {
@@ -67,6 +91,20 @@ function buscarEnEstudiante(busqueda, regex) {
     });
 }
 
+function buscarEnEstudiante(busqueda, regex) {
+    return new Promise((resolve, reject) => {
+        Estudiante.find({ perteneceA: regex }, (err, sedes) => {
+            if (err) {
+                reject('Error al cargar las sedes de los estudiantes');
+            } else {
+                resolve(sedes);
+            }
+        });
+    });
+}
+
+
+
 function buscarEnAlojamientoDisponibleyAceptado(busqueda, regex, desde) {
     return new Promise((resolve, reject) => {
         Alojamiento.find({ 'propiedadesAlojamiento.estadoAlojamiento': 'Disponible', 'propiedadesAlojamiento.estadoPublicacionAlojamiento': 'Aceptado' })
@@ -94,7 +132,6 @@ function buscarEnAlojamientoFiltro(sede, hospedan, hospedaje, habitacion, desde)
             .populate('estudiante', 'role email')
             .skip(desde)
             .limit(5)
-            //.and([{ 'sedeCercana': regex }, { 'hospedanA': regex }, { 'propiedadesAlojamiento.tipoVivienda': regex }, { 'propiedadesAlojamiento.tipoHabitacion': regex }])
             .and([{ 'sedeCercana': sede }, { 'hospedanA': hospedan }, { 'tipoVivienda': hospedaje }, { 'tipoHabitacion': habitacion }])
             .exec((err, alojamientos) => {
                 if (err) {
@@ -108,5 +145,56 @@ function buscarEnAlojamientoFiltro(sede, hospedan, hospedaje, habitacion, desde)
             })
     });
 }
+
+
+function buscarCantidadAlojamientos() {
+    return new Promise((resolve, reject) => {
+        Alojamiento.count({}, (err, cantidadAlojamientos) => {
+            if (err) {
+                reject('Error al cargar las sedes de los estudiantes');
+            } else {
+                resolve(cantidadAlojamientos);
+            }
+        });
+    });
+}
+
+function buscarCantidadAlojamientosDisponibles() {
+    return new Promise((resolve, reject) => {
+        Alojamiento.count({ 'propiedadesAlojamiento.estadoAlojamiento': 'Disponible' }, (err, alojamientosDisponibles) => {
+            if (err) {
+                reject('Error al cargar los alojamientos disponibles');
+            } else {
+                resolve(alojamientosDisponibles);
+            }
+        });
+    });
+}
+
+
+function buscarCantidadAlojamientosAceptados() {
+    return new Promise((resolve, reject) => {
+        Alojamiento.count({ 'propiedadesAlojamiento.estadoPublicacionAlojamiento': 'Aceptado' }, (err, alojamientosAceptados) => {
+            if (err) {
+                reject('Error al cargar los alojamientos aprobados');
+            } else {
+                resolve(alojamientosAceptados);
+            }
+        });
+    });
+}
+
+function buscarCantidadAlojamientosPorAprobar() {
+    return new Promise((resolve, reject) => {
+        Alojamiento.count({ 'propiedadesAlojamiento.estadoPublicacionAlojamiento': 'En estudio' }, (err, alojamientosPorAprobar) => {
+            if (err) {
+                reject('Error al cargar los alojamientos por aprobar');
+            } else {
+                resolve(alojamientosPorAprobar);
+            }
+        });
+    });
+}
+
 // Exporatacion para hacer uso de ella en cualquier modulo
 module.exports = app;
