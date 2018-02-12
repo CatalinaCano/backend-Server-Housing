@@ -32,6 +32,21 @@ app.get('/todo/:busqueda', (req, res, next) => {
         })
 });
 
+// Busqueda de alojamientos Disponibles y aceptados para la galeria
+app.get('/galeria', (req, res, next) => {
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+    Promise.all([
+            buscarAlojamientosGaleria(desde)
+        ])
+        .then(respuestas => {
+            res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente - alojamientos de la galeria',
+                alojamientosGaleria: respuestas[0]
+            }); // Todo se hizo corriendo correctamente
+        })
+});
 
 
 // Busqueda de Estadisticas
@@ -119,6 +134,26 @@ function buscarEnAlojamientoDisponibleyAceptado(busqueda, regex, desde) {
 
                     Alojamiento.count({}, (err, total) => {
                         resolve(alojamientos, total);
+                    })
+                }
+            })
+    });
+}
+
+
+function buscarAlojamientosGaleria(desde) {
+    return new Promise((resolve, reject) => {
+        Alojamiento.find({ 'propiedadesAlojamiento.estadoAlojamiento': 'Disponible', 'propiedadesAlojamiento.estadoPublicacionAlojamiento': 'Aceptado' })
+            .populate('estudiante', 'role email')
+            .skip(desde)
+            .limit(5)
+            .exec((err, alojamientosGaleria) => {
+                if (err) {
+                    reject('Erro al cargar alojamientos');
+                } else {
+
+                    Alojamiento.count({}, (err, total) => {
+                        resolve(alojamientosGaleria, total);
                     })
                 }
             })
