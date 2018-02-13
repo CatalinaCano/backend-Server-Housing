@@ -48,6 +48,22 @@ app.get('/galeria', (req, res, next) => {
         })
 });
 
+// Busqueda de todos los alojamientos
+app.get('/admin/alojamientos', (req, res, next) => {
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+    Promise.all([
+            buscarAlojamientos(desde)
+        ])
+        .then(respuestas => {
+            res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente - alojamientos de la galeria',
+                totalAlojamientos: respuestas[0]
+            }); // Todo se hizo corriendo correctamente
+        })
+});
+
 
 // Busqueda de Estadisticas
 app.get('/estadisticas', (req, res, next) => {
@@ -80,7 +96,7 @@ app.get('/alojamientos/:sede/:hospedan/:hospedaje/:habitacion', (req, res) => {
     var habitacion = req.params.habitacion;
 
     Promise.all([
-            buscarEnAlojamientoFiltro(sede, hospedan, hospedaje, habitacion),
+            buscarEnAlojamientoFiltro(sede, hospedan, hospedaje, habitacion)
         ])
         .then(respuestas => {
             res.status(202).json({
@@ -90,6 +106,124 @@ app.get('/alojamientos/:sede/:hospedan/:hospedaje/:habitacion', (req, res) => {
             }); // Todo se hizo corriendo correctamente
         })
 });
+
+
+// Busqueda en simultanea de administrador
+// Busqueda por todo
+
+// /new?portfolioId&param1&param2
+app.get('/admin', (req, res, next) => {
+
+    var sede = req.param('sede');
+    var hospedanA = req.param('hospedanA');
+    var estadoAlojamiento = req.param('estadoAlojamiento');
+    var estadoPublicacionAlojamiento = req.param('estadoPublicacionAlojamiento');
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+
+
+    Promise.all([
+            buscarPorSedeAlojamiento(sede, desde),
+            buscarPorTipoPersona(hospedanA, desde),
+            buscarPorEstadosAlojamiento(hospedanA, desde),
+            buscarPorEstadosPublicacionAlojamiento(hospedanA, desde)
+        ])
+        .then(respuestas => {
+            res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente - admin',
+                sedesAlojamientos: respuestas[0],
+                tipoPersonas: respuestas[1],
+                estadosAlojamientos: respuestas[2],
+                estadosPublicacionAlojamiento: respuestas[3]
+
+            }); // Todo se hizo corriendo correctamente
+        })
+});
+
+
+function buscarPorTipoPersona(hospedanA, desde) {
+    return new Promise((resolve, reject) => {
+        Alojamiento.find({
+                'hospedanA': hospedanA
+            })
+            .populate('estudiante', 'role email')
+            .skip(desde)
+            .limit(5)
+            .exec((err, tipoPersonas) => {
+                if (err) {
+                    reject('Erro al cargar alojamientos');
+                } else {
+
+                    Alojamiento.count({}, (err, total) => {
+                        resolve(tipoPersonas, total);
+                    })
+                }
+            })
+    });
+}
+
+function buscarPorSedeAlojamiento(sede, desde) {
+    return new Promise((resolve, reject) => {
+        Alojamiento.find({ 'sedeCercana': sede })
+            .populate('estudiante', 'role email')
+            .skip(desde)
+            .limit(5)
+            .exec((err, sedesAlojamientos) => {
+                if (err) {
+                    reject('Erro al cargar alojamientos');
+                } else {
+
+                    Alojamiento.count({}, (err, total) => {
+                        resolve(sedesAlojamientos, total);
+                    })
+                }
+            })
+    });
+}
+
+function buscarPorEstadosAlojamiento(estadoAlojamiento, desde) {
+    return new Promise((resolve, reject) => {
+        Alojamiento.find({
+                'estadoAlojamiento': estadoAlojamiento
+            })
+            .populate('estudiante', 'role email')
+            .skip(desde)
+            .limit(5)
+            .exec((err, estadoAlojamiento) => {
+                if (err) {
+                    reject('Erro al cargar alojamientos');
+                } else {
+
+                    Alojamiento.count({}, (err, total) => {
+                        resolve(estadoAlojamiento, total);
+                    })
+                }
+            })
+    });
+}
+
+function buscarPorEstadosPublicacionAlojamiento(estadoPublicacionAlojamiento, desde) {
+    return new Promise((resolve, reject) => {
+        Alojamiento.find({
+                'estadoPublicacionAlojamiento': estadoPublicacionAlojamiento
+            })
+            .populate('estudiante', 'role email')
+            .skip(desde)
+            .limit(5)
+            .exec((err, estadoPublicacionAlojamiento) => {
+                if (err) {
+                    reject('Erro al cargar alojamientos');
+                } else {
+
+                    Alojamiento.count({}, (err, total) => {
+                        resolve(estadoPublicacionAlojamiento, total);
+                    })
+                }
+            })
+    });
+}
+
 
 
 
@@ -160,6 +294,25 @@ function buscarAlojamientosGaleria(desde) {
     });
 }
 
+
+function buscarAlojamientos(desde) {
+    return new Promise((resolve, reject) => {
+        Alojamiento.find({})
+            .populate('estudiante', 'role email')
+            .skip(desde)
+            .limit(5)
+            .exec((err, totalAlojamientos) => {
+                if (err) {
+                    reject('Erro al cargar alojamientos');
+                } else {
+
+                    Alojamiento.count({}, (err, total) => {
+                        resolve(totalAlojamientos, total);
+                    })
+                }
+            })
+    });
+}
 
 function buscarEnAlojamientoFiltro(sede, hospedan, hospedaje, habitacion, desde) {
     return new Promise((resolve, reject) => {
