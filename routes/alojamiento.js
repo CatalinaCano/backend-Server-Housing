@@ -1,10 +1,12 @@
 // Importacion del Express
 var express = require('express');
+//var formData = require('express-form-data');
+var fileUpload = require('express-fileupload');
 var app = express(); // Levantar la app
+
 
 //Importar modelo de  Administrador
 var Alojamiento = require('../models/alojamiento');
-
 
 
 //Metodo para obtener  alojamientos
@@ -36,34 +38,83 @@ app.get('/', (req, res) => {
         });
 });
 
-/** 
-//Metodo para obtener  alojamientos
-app.get('/', (req, res) => {
-    Alojamiento.find({}, (err, alojamientos) => {
-        if (err) {
-            return res
-                .status(500)
-                .json({
-                    ok: false,
-                    mensaje: 'Error al consultar alojamientos',
-                    errors: err
-                });
+app.use(fileUpload());
+
+app.post('/', (req, res) => {
+    if (!req.files) {
+        return res.status(400).json({
+            ok: false,
+            mensaje: 'Debe seleccionar una imagen'
+        });
+    }
+
+    var sala = req.files.imgSala;
+    var banio = req.files.imgBanio;
+    var cocina = req.files.imgCocina;
+    var habitacion = req.files.imgHabitacion;
+    var fachada = req.files.imgFachada;
+    var imgs = [sala, banio, cocina, habitacion, fachada];
+
+    var r = verificarExtension(imgs);
+
+    if (r.indexOf('NO') < 0) {
+        res.status(200).json({
+            ok: true,
+            mensaje: 'Todas la imagenes validas'
+        })
+    } else {
+        return res.status(400).json({
+            ok: true,
+            mensaje: ' imagenes no válidas'
+        });
+    }
+
+
+});
+
+
+
+function verificarExtension(imgs) {
+    var archivo;
+    var extensionesValidas = ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'];
+    var acep = [];
+    for (var i = 0; i < imgs.length; i++) {
+        archivo = imgs[i].name.split('.');
+        if (extensionesValidas.indexOf(archivo[archivo.length - 1]) < 0) {
+            acep.push('NO');
+        } else {
+            acep.push('SI');
         }
-        return res
-            .status(200)
-            .json({
-                ok: true,
-                mensaje: 'Consulta de alojamientos Exitosa',
-                alojamientos: alojamientos
-            });
-    });
-});**/
+
+    }
+    return acep;
+}
 
 
+/*
 // Crear Alojamiento
 app.post('/:id', (req, res) => {
     var body = req.body;
     var idEstudiante = req.params.id;
+
+
+    if (!req.files) {
+        return res.status(400).json({
+            ok: false,
+            mensaje: 'Debe seleccionar una imagen'
+        });
+    }
+
+    // Obtener el nombre del archivo
+    var Sala = req.files.imgSala;
+    var Banio = req.files.imgBanio;
+    var Cocina = req.files.imgCocina;
+    var Habitacion = req.files.imgHabitacion;
+    var Fachada = req.files.imgFachada;
+
+
+
+
     //Definicion para crear un nuevo usuario
     var alojamiento = new Alojamiento({
         estudiante: idEstudiante,
@@ -87,11 +138,11 @@ app.post('/:id', (req, res) => {
         },
 
         imagenes: {
-            imgSala: body.imgSala,
-            imgBanio: body.imgBanio,
-            imgCocina: body.imgCocina,
-            imgHabitacion: body.imgHabitacion,
-            imgFachada: body.imgFachada
+            imgSala: Sala,
+            imgBanio: Banio,
+            imgCocina: Cocina,
+            imgHabitacion: Habitacion,
+            imgFachada: Fachada
         },
 
         mascota: {
@@ -183,7 +234,7 @@ app.post('/:id', (req, res) => {
             alojamientoGuardado: alojamientoGuardado
         });
     });
-});
+});*/
 
 // Actualizar alojamiento
 //id: variable para capturar un usuario
