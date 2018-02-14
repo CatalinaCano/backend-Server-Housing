@@ -5,6 +5,11 @@ var fileUpload = require('express-fileupload');
 var app = express(); // Levantar la app
 
 
+
+var nombresNuevos = [];
+var path = [];
+var archivo;
+
 //Importar modelo de  Administrador
 var Alojamiento = require('../models/alojamiento');
 
@@ -40,7 +45,10 @@ app.get('/', (req, res) => {
 
 app.use(fileUpload());
 
-app.post('/', (req, res) => {
+app.post('/:id', (req, res) => {
+
+    var estudianteId = req.params.id;
+
     if (!req.files) {
         return res.status(400).json({
             ok: false,
@@ -55,27 +63,38 @@ app.post('/', (req, res) => {
     var fachada = req.files.imgFachada;
     var imgs = [sala, banio, cocina, habitacion, fachada];
 
-    var r = verificarExtension(imgs);
+    var r = verificarExtension(imgs, estudianteId, res);
 
-    if (r.indexOf('NO') < 0) {
-        res.status(200).json({
-            ok: true,
-            mensaje: 'Todas la imagenes validas'
-        })
-    } else {
+    if (r.indexOf('SI') < 0) {
         return res.status(400).json({
             ok: true,
             mensaje: ' imagenes no válidas'
         });
     }
 
+    for (var x = 0; x < nombresNuevos.length; x++) {
+        path.push(`./uploads/alojamientos/${nombresNuevos[x]}`);
+        console.log(path[x]);
+        imgs[x].mv(path[x], err => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al mover imagen',
+                    err: err
+                });
+            }
 
+            return res.status(200).json({
+                ok: true,
+                mensaje: 'lo logramos'
+            });
+        })
+    }
 });
 
 
 
-function verificarExtension(imgs) {
-    var archivo;
+function verificarExtension(imgs, id) {
     var extensionesValidas = ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'];
     var acep = [];
     for (var i = 0; i < imgs.length; i++) {
@@ -84,10 +103,16 @@ function verificarExtension(imgs) {
             acep.push('NO');
         } else {
             acep.push('SI');
+            asignarNombreAleatorio(id, archivo[archivo.length - 1], i);
+
         }
 
     }
     return acep;
+}
+
+function asignarNombreAleatorio(id, extension, i) {
+    nombresNuevos.push(`${id}-${new Date().getMilliseconds()}-${i}.${extension}`);
 }
 
 
