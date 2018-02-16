@@ -6,40 +6,48 @@ var app = express(); // Levantar la app
 var Estudiante = require('../models/estudiante');
 
 var GoogleAuth = require('google-auth-library');
-var { google } = require('googleapis');
-var OAuth2 = google.auth.OAuth2;
+var auth = new GoogleAuth;
 
 const GOOGLE_CLIENT_ID = require('../config/config').GOOGLE_CLIENT_ID;
 const GOOGLE_SECRET = require('../config/config').GOOGLE_SECRET;
 
 // Autenticacion de google
-app.post('/google', (req, res, next) => {
-
-    var token = req.body.token || 'XXX';
-
-    var oauth2Client = new OAuth2(GOOGLE_CLIENT_ID, GOOGLE_SECRET, '');
-
-    oauth2Client.verifyIdToken({
-            idToken: token,
-            audience: GOOGLE_CLIENT_ID
-        },
+app.post('/google', (req, res) => {
+    var token = req.params.token || 'XXX';
+    var client = new auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_SECRET, '');
+    client.verifyIdToken(
+        token,
+        GOOGLE_CLIENT_ID,
         function(e, login) {
-
-            if (error) return console.error(error);
+            if (e) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Token no valido',
+                    errors: e
+                });
+            }
             var payload = login.getPayload();
             var userid = payload['sub'];
+            // If request specified a G Suite domain:
+            //var domain = payload['hd'];
 
+            Estudiante.findOne({ email: payload.email }, (err, estudianteBD) => {
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        mensaje: 'Correo no registrado en la BD',
+                        errors: err
+                    });
+                }
+                res.status(200).json({
+                    ok: true,
+                    mensaje: 'Se encontro el correo en la BD',
+                    estudianteBD: estudianteBD
+                });
 
-            res.status(200).json({
-                ok: true,
-                payload: payload
             });
-
-        }
-    )
-
+        });
 });
-
 
 
 app.post('/', (req, res) => {
@@ -73,11 +81,6 @@ app.post('/', (req, res) => {
     });
 
 });
-
-
-
-
-
 
 
 module.exports = app;
