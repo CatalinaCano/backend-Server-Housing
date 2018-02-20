@@ -10,10 +10,12 @@ var auth = new GoogleAuth;
 
 const GOOGLE_CLIENT_ID = require('../config/config').GOOGLE_CLIENT_ID;
 const GOOGLE_SECRET = require('../config/config').GOOGLE_SECRET;
-const token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjNlMTg3MTc3Zjk5ODdjMTkxMDg1MTA3ZjY4M2E2ZWEyNzdhZmJjOGQifQ.eyJhenAiOiI0MzAyOTQzMzQyMzUtYWIwdDFiMWU0NWJtbDIxM2s4MmxsZDQ2bmcxczlkZmsuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MzAyOTQzMzQyMzUtYWIwdDFiMWU0NWJtbDIxM2s4MmxsZDQ2bmcxczlkZmsuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDU0NzM2NzE2MjkzNzAwMzAxMzMiLCJlbWFpbCI6ImNmcmlhbm9jMDExOEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6IkdrNFJ0WEFmV2NhblNlUUJPdzNRcGciLCJleHAiOjE1MTkwOTU1ODksImlzcyI6ImFjY291bnRzLmdvb2dsZS5jb20iLCJqdGkiOiIxMGNiMjAyZDAyMzRhZjc1YWY0OWFiNThhNjY2ZmIzODcwNTZmYTM2IiwiaWF0IjoxNTE5MDkxOTg5LCJuYW1lIjoiQ3Jpc3RoaWFuIFJpYcOxbyIsInBpY3R1cmUiOiJodHRwczovL2xoNS5nb29nbGV1c2VyY29udGVudC5jb20vLXhlRy02d0FxQlZrL0FBQUFBQUFBQUFJL0FBQUFBQUFBQUI0L2VneTJCTnNzV1NRL3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJDcmlzdGhpYW4iLCJmYW1pbHlfbmFtZSI6IlJpYcOxbyIsImxvY2FsZSI6ImVzLTQxOSJ9.GFUEd7E9bYeMOwhJLxUjWZh5ZW21a9jZbdffzN1j6LdwNs4MiMXx3t_x6uPySF6nXrCjJBvxOxvVTYuyfm_bW5R9EoTVMoRxmhWqoYsqKFsRB_Fkua3djZ_iZkAJBbNgc99Fq0Ltg2tceVCP7DnZFOH8d2NbgmDib6-pLYzHSzwpv64D6_-2C9-A6E8kSuq5lNsdHrWfhf92E_WB-97VLpzj2HaZ2mBgFBEgCjgA2Ejjaa4AlazyVl90-NqpWNgKr9jMechgNh452XoRmfTAwFcRa4UtImfC6th3QC4leVGDuDMKQ0GkeFkDK-UHXQbJJau-mbVB-vz2ilEMhIdxvw';
+
+//const token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjNlMTg3MTc3Zjk5ODdjMTkxMDg1MTA3ZjY4M2E2ZWEyNzdhZmJjOGQifQ.eyJhenAiOiI0MzAyOTQzMzQyMzUtYWIwdDFiMWU0NWJtbDIxM2s4MmxsZDQ2bmcxczlkZmsuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MzAyOTQzMzQyMzUtYWIwdDFiMWU0NWJtbDIxM2s4MmxsZDQ2bmcxczlkZmsuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDc2MjkyNTM1ODY3MzM2MjAxMjkiLCJlbWFpbCI6ImNhdGFsaW5hY2FubzA4QGhvdG1haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiI1d19TWVl3aFJEc3VXbmVuMU5YLXdnIiwiZXhwIjoxNTE5MTAwMTQ2LCJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwianRpIjoiODI5ZDRlMzI2YjRhZDAwN2JmMDliNjEzNmZkZmI5OTUyZWQ0N2YzZSIsImlhdCI6MTUxOTA5NjU0NiwibmFtZSI6IkNhdGFsaW5hIENhbm8iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy12LTRaNzRfOTh0MC9BQUFBQUFBQUFBSS9BQUFBQUFBQUttdy9TUXVVaVgzV1NXay9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiQ2F0YWxpbmEiLCJmYW1pbHlfbmFtZSI6IkNhbm8iLCJsb2NhbGUiOiJlcyJ9.GN81V3ShHjMU0FwYQzXpE-cqznAzcjr9is4TreoQR_-4jMW24HGTjFw7MuAUSTmKxZ9Azj4rkkGyCj_2PblVBflWoCFTBIfXXHB3kFEmx3469MAJ4utqLeNMRvLiA5E93pKVLJe2eYusLz1H_oyPvbp62A96UF8IomaU9QrdIwHoOROx03X6f0vRbwwHRN6MDhDAFzOlo6p8WcZRtVf6VMAEz2fh2da_UqGr5ZrPDr_ssXBXkEYpFaVJcppbbNw5x41j7WNLAf8IRUL7nfWmz1xXeescGm06w9qdQEj7Ft9jpiYMQWdXTp7toXfEqfy2_iucPbdqeBGdsmLQkO7Gxw';
 var client = new auth.OAuth2(GOOGLE_CLIENT_ID, '', '');
 
 app.post('/google', (req, res) => {
+    var token = req.body.token || 'XXX';
     client.verifyIdToken(
         token,
         GOOGLE_CLIENT_ID,
@@ -45,51 +47,10 @@ app.post('/google', (req, res) => {
 
             });
 
-            // If request specified a G Suite domain:
-            //var domain = payload['hd'];
         });
 
 });
 
-/*app.post('/', (req, res) => {
-    var token = req.body.token || 'XXX';
-    var client = new auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_SECRET, '');
-    console.log(token);
-    client.verifyIdToken(
-        token,
-        GOOGLE_CLIENT_ID,
-        function(e, login) {
-
-            if (e) {
-                return res.status(500).json({
-                    ok: false,
-                    mensaje: 'Token no valido',
-                    e: e
-                });
-            }
-            var payload = login.getPayload();
-            var userid = payload['sub'];
-
-
-            Estudiante.findOne({ email: payload.email }, (e, estudianteBD) => {
-                if (e) {
-                    return res.status(500).json({
-                        ok: false,
-                        mensaje: 'Correo no registrado en la BD',
-                        e: e
-                    });
-                }
-                res.status(200).json({
-                    ok: true,
-                    mensaje: 'Se encontro el correo en la BD',
-                    estudianteBD: estudianteBD
-                });
-
-            });
-        });
-});
-
-/*
 app.post('/', (req, res) => {
     var body = req.body;
     Estudiante.findOne({ email: body.email }, (err, estudianteEncontrado) => {
@@ -120,6 +81,6 @@ app.post('/', (req, res) => {
             });
     });
 
-});*/
+});
 
 module.exports = app;
