@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 //variable para controlar los roles validos
 
 var rolesValidos = {
-    values: ['ADMIN_ROLE', 'ESTUDIANTE_ROLE'],
+    values: ['ADMINISTRADOR', 'ESTUDIANTE'],
     message: '{VALUE} no es un rol válido'
 };
 
@@ -21,7 +21,7 @@ var administradorSchema = new Schema({
         required: [true, 'Este Campo es Requerido']
     },
     password: { type: String, required: [true, 'Este Campo es Requerido'] },
-    role: { type: String, required: [true, 'Este Campo es Requerido'], default: 'ESTUDIANTE_ROLE', enum: rolesValidos }
+    role: { type: String, required: [true, 'Este Campo es Requerido'], default: 'ADMINISTRADOR', enum: rolesValidos }
 
 
 }, { collection: 'administradores' });

@@ -36,7 +36,7 @@ var sedesValidas = {
 };
 
 var rolesValidos = {
-    values: ['ADMIN_ROLE', 'ESTUDIANTE_ROLE'],
+    values: ['ADMINISTRADOR', 'ESTUDIANTE'],
     message: '{VALUE} no es un rol válido'
 };
 
@@ -45,7 +45,7 @@ var rolesValidos = {
 var estudianteSchema = new Schema({
     sobreMi: { type: String, required: [true, 'Este Campo es Requerido'] },
     perteneceA: { type: String, required: [true, 'Debe seleccionar una sede válida'], enum: sedesValidas },
-    role: { type: String, required: [true, 'Este Campo es Requerido'], default: 'ESTUDIANTE_ROLE', enum: rolesValidos },
+    role: { type: String, required: [true, 'Este Campo es Requerido'], default: 'ESTUDIANTE', enum: rolesValidos },
     email: {
         type: String,
         unique: true,
