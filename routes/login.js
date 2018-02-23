@@ -35,6 +35,7 @@ app.post('/google', (req, res) => {
                     return res.status(500).json({
                         ok: false,
                         mensaje: 'Correo no registrado en la BD',
+                        token: null,
                         e: e
                     });
                 }
@@ -52,6 +53,7 @@ app.post('/google', (req, res) => {
         });
 
 });
+
 
 app.post('/', (req, res) => {
     var body = req.body;
