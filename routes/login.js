@@ -45,7 +45,8 @@ app.post('/google', (req, res) => {
                     mensaje: 'Se encontro el correo en la BD',
                     token: token,
                     imagenUsuario: payload.picture,
-                    estudianteBD: estudianteBD
+                    estudianteBD: estudianteBD,
+                    nombres: given_name
                 });
 
             });
