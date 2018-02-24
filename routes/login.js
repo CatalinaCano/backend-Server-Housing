@@ -46,7 +46,7 @@ app.post('/google', (req, res) => {
                     token: token,
                     imagenUsuario: payload.picture,
                     estudianteBD: estudianteBD,
-                    nombres: given_name
+                    nombres: payload.given_name
                 });
 
             });
