@@ -148,8 +148,7 @@ app.post('/:id', (req, res) => {
         },
 
         mascota: {
-            habitaMascota: body.habitaMascota,
-            tipoMascota: body.tipoMascota
+            habitaMascota: body.habitaMascota
         },
 
         normasAlojamiento: {
@@ -168,7 +167,8 @@ app.post('/:id', (req, res) => {
             bicicleta: body.bicicleta,
             taxi: body.taxi,
             caminando: body.caminando,
-            metro: body.metro
+            metro: body.metro,
+            uber: body.uber
         },
 
         lugaresCercanos: {

@@ -117,15 +117,15 @@ var franjasValidas = {
 // Definir el Administrador esquema
 // Funcion que recibe un objeto de js con la configuracion del registro
 var alojamientoSchema = new Schema({
-    //estudianteAnfitrion: { type: Schema.Types.ObjectId, ref: 'Estudiante' },
-    estudiante: { type: Schema.Types.ObjectId, ref: 'Estudiante' },
-    administrador: { type: Schema.Types.ObjectId, ref: 'Administrador' },
-    tipoVivienda: { type: String, required: [true, ' El tipo de vivienda es requerido'], enum: tipoViviendaValido },
-    tipoHabitacion: { type: String, required: [true, 'El tipo de habitacion es requerido'], enum: tipoHabitacionValido },
+
+    estudiante: { type: Schema.Types.ObjectId, ref: 'Estudiante' }, //
+    administrador: { type: Schema.Types.ObjectId, ref: 'Administrador' }, //
+    tipoVivienda: { type: String, required: [true, ' El tipo de vivienda es requerido'], enum: tipoViviendaValido }, //
+    tipoHabitacion: { type: String, required: [true, 'El tipo de habitacion es requerido'], enum: tipoHabitacionValido }, //
     propiedadesAlojamiento: {
-        descripcionAlojamiento: { type: String, required: [true, 'La descripcion del alojamiento es requerida'] },
-        clasificacionAlojamiento: { type: String, required: [true, 'La clasificacion del alojamiento es requerida'], enum: clasificacionAlojamientoValido },
-        estadoAlojamiento: { type: String, required: [true, 'El estado del alojamiento es requerido'], default: 'Disponible', enum: estadoAlojamientoValido },
+        descripcionAlojamiento: { type: String, required: [true, 'La descripcion del alojamiento es requerida'] }, //
+        clasificacionAlojamiento: { type: String, required: [true, 'La clasificacion del alojamiento es requerida'], enum: clasificacionAlojamientoValido }, //
+        estadoAlojamiento: { type: String, required: [true, 'El estado del alojamiento es requerido'], default: 'Disponible', enum: estadoAlojamientoValido }, //
         estadoPublicacionAlojamiento: { type: String, required: [true, 'El estado de la publicacion es requerido'], default: 'En estudio', enum: estadoPublicacionAlojamientoValido },
         fechaPublicacionAlojamiento: { type: String, required: [true, 'La fecha de publicacion es requerida'] }
     },
@@ -145,8 +145,7 @@ var alojamientoSchema = new Schema({
 
     },
     mascota: {
-        habitaMascota: { type: String, required: [true, 'Es necesario especificar si habita mascota'], enum: respuestasValidas },
-        tipoMascota: { type: String, required: [true, 'Es necesario especificar el tipo de mascota'], default: 'Sin mascota', enum: tipoMascotaValida }
+        habitaMascota: { type: String, required: [true, 'Es necesario especificar si habita mascota'], enum: tipoMascotaValida },
     },
     normasAlojamiento: {
         horaLlegada: { type: String, required: [true, 'Es necesario especificar la hora de llegada '], enum: horasValidas },
@@ -163,7 +162,8 @@ var alojamientoSchema = new Schema({
         bicicleta: { type: String, required: [true, 'Es necesario especificar  si esta disponible el tipo de transporte '], enum: respuestasValidas },
         taxi: { type: String, required: [true, 'Es necesario especificar  si esta disponible el tipo de transporte '], enum: respuestasValidas },
         caminando: { type: String, required: [true, 'Es necesario especificar  si esta disponible el tipo de transporte '], enum: respuestasValidas },
-        metro: { type: String, required: [true, 'Es necesario especificar  si esta disponible el tipo de transporte '], enum: respuestasValidas }
+        metro: { type: String, required: [true, 'Es necesario especificar  si esta disponible el tipo de transporte '], enum: respuestasValidas },
+        uber: { type: String, required: [true, 'Es necesario especificar  si esta disponible el tipo de transporte '], enum: respuestasValidas }
     },
     lugaresCercanos: {
         centrosComerciales: { type: String, required: [true, 'Es necesario especificar si hay centros comerciales alrededor de su alojamiento'], enum: respuestasValidas },
