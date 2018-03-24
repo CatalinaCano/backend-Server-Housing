@@ -175,7 +175,7 @@ app.use(fileUpload());
 
 app.put('/:idAlojamiento', (req, res) => {
 
-    var alojamientoid = req.params.id;
+    var alojamientoid = req.params.idAlojamiento;
 
     Alojamiento.findById(idAlojamiento, (err, alojamiento) => {
         if (err) {

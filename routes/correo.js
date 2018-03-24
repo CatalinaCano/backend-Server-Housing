@@ -15,11 +15,31 @@ var transporter = nodemailer.createTransport({
 });
 
 // Rutas
-app.get('/enEstudio/', (req, res, next) => {
-    res.status(202).json({
-        ok: true,
-        mensaje: 'Petición realizada correctamente'
-    }); // Todo se hizo corriendo correctamente
+app.post('/enEstudio/:correo', (req, res, next) => {
+    var correoEstudiante = req.params.correo;
+
+    const mailOptions = {
+        from: 'HousingUD ' + MAIL_ADMIN,
+        to: correoEstudiante,
+        subject: 'Alojamiento Registrado Exitosamente',
+        html: '<h1>Felicidades!!!</h1><p>Nos complace informarte que tu alojamiento,ha sido registrado exitosamente. En el momento en que el administrador lo verifique recibiras un correo informando el nuevo estado del alojamiento.</p> <br> Cordialmente, <br> Administrador Housing UD '
+    };
+
+    transporter.sendMail(mailOptions, function(err, info) {
+        if (err)
+            return res.status(505).json({
+                ok: false,
+                mensaje: 'La Petición no pudo ser realizada correctamente',
+                err: err
+            });
+        else
+            return res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente'
+            });
+    });
+
+
 });
 
 // Exporatacion para hacer uso de ella en cualquier modulo
