@@ -74,7 +74,7 @@ var hospedanAValido = {
 };
 
 var tipoMascotaValida = {
-    values: ['Mamífero', 'Ave', 'Peces', 'Reptiles', 'Anfibios', 'Invertebrado', 'Otro', 'Sin mascota'],
+    values: ['Ninguna', 'Mamífero', 'Ave', 'Peces', 'Reptiles', 'Anfibios', 'Invertebrado', 'SinOtromascota'],
     message: '{VALUES}  no es un tipo de máscota valido'
 };
 
@@ -108,8 +108,9 @@ var horasValidas = {
     message: '{VALUES} no es un tipo de hora valida'
 };
 
+
 var franjasValidas = {
-    values: ['Am', 'Pm'],
+    values: ['AM', 'PM'],
     message: '{VALUES} no es un tipo de franja valida'
 };
 
@@ -119,7 +120,6 @@ var franjasValidas = {
 var alojamientoSchema = new Schema({
 
     estudiante: { type: Schema.Types.ObjectId, ref: 'Estudiante' }, //
-    administrador: { type: Schema.Types.ObjectId, ref: 'Administrador' }, //
     tipoVivienda: { type: String, required: [true, ' El tipo de vivienda es requerido'], enum: tipoViviendaValido }, //
     tipoHabitacion: { type: String, required: [true, 'El tipo de habitacion es requerido'], enum: tipoHabitacionValido }, //
     propiedadesAlojamiento: {
@@ -137,11 +137,11 @@ var alojamientoSchema = new Schema({
         zona: { type: String, required: [true, 'La zona es requerida'], enum: tipoZonaValida }
     },
     imagenes: {
-        imgSala: { type: String, required: [true, 'La Foto de la sala es requerida'] },
-        imgBanio: { type: String, required: [true, 'La Foto del Baño es requerida'] },
-        imgCocina: { type: String, required: [true, 'La Foto de la cocina es requerida'] },
-        imgHabitacion: { type: String, required: [true, 'La Foto de la habitacion es requerida'] },
-        imgFachada: { type: String, required: [true, 'La Foto de la fachada principal es requerida'] }
+        imgSala: { type: String, required: [false, 'La Foto de la sala es requerida'] },
+        imgBanio: { type: String, required: [false, 'La Foto del Baño es requerida'] },
+        imgCocina: { type: String, required: [false, 'La Foto de la cocina es requerida'] },
+        imgHabitacion: { type: String, required: [false, 'La Foto de la habitacion es requerida'] },
+        imgFachada: { type: String, required: [false, 'La Foto de la fachada principal es requerida'] }
 
     },
     mascota: {

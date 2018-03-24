@@ -43,80 +43,10 @@ app.get('/', (req, res) => {
         });
 });
 
-app.use(fileUpload());
-
-app.post('/:id', (req, res) => {
-
-    var estudianteId = req.params.id;
+app.post('/:idEstudiante', (req, res) => {
+    var estudianteId = req.params.idEstudiante;
     var body = req.body;
 
-    if (!req.files) {
-        return res.status(400).json({
-            ok: false,
-            mensaje: 'Debe seleccionar una imagen'
-        });
-    }
-
-    var sala = req.files.imgSala;
-    var banio = req.files.imgBanio;
-    var cocina = req.files.imgCocina;
-    var habitacion = req.files.imgHabitacion;
-    var fachada = req.files.imgFachada;
-    var archivos = [sala, banio, cocina, habitacion, fachada];
-
-
-    // Nombres de archivos
-    var nombreSala = sala.name.split('.');
-    var nombreBanio = banio.name.split('.');
-    var nombreCocina = cocina.name.split('.');
-    var nombreHabitacion = habitacion.name.split('.');
-    var nombreFachada = fachada.name.split('.');
-
-
-    // Extendsion de archivos
-    var extensionSala = nombreSala[nombreSala.length - 1];
-    var extensionBanio = nombreBanio[nombreBanio.length - 1];
-    var extensionCocina = nombreCocina[nombreCocina.length - 1];
-    var extensionHabitacion = nombreHabitacion[nombreHabitacion.length - 1];
-    var extensionFachada = nombreFachada[nombreFachada.length - 1];
-    var extensiones = [extensionSala, extensionBanio, extensionCocina, extensionHabitacion, extensionFachada];
-
-    // Extensiones Validas
-    var extensionesValidas = ['png', 'PNG', 'JPG', 'jpg', 'jpeg', 'JPEG'];
-    console.log(extensiones.length);
-
-    for (var i = 0; i < extensiones.length; i++) {
-        if (extensionesValidas.indexOf(extensiones[i]) < 0) {
-            return res.status(400).json({
-                ok: false,
-                mensaje: 'Extension no valida',
-                error: extensionesValidas.join(', ')
-            });
-        }
-
-    }
-
-    // Nombres de archivos personalizados
-    var nombreFinalSala = `${estudianteId}-${new Date().getMilliseconds()}-1.${extensionSala}`;
-    var nombreFinalBanio = `${estudianteId}-${new Date().getMilliseconds()}-2.${extensionBanio}`;
-    var nombreFinalCocina = `${estudianteId}-${new Date().getMilliseconds()}-3.${extensionCocina}`;
-    var nombreFinalHabitacion = `${estudianteId}-${new Date().getMilliseconds()}-4.${extensionHabitacion}`;
-    var nombreFinalFachada = `${estudianteId}-${new Date().getMilliseconds()}-5.${extensionFachada}`;
-
-    var archivosFinales = [nombreFinalSala, nombreFinalBanio, nombreFinalCocina, nombreFinalHabitacion, nombreFinalFachada];
-
-    for (var i = 0; i < archivosFinales.length; i++) {
-        var path = `./uploads/alojamientos/${archivosFinales[i]}`;
-        archivos[i].mv(path, err => {
-            if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    mensaje: 'Error al mover archivo'
-                })
-            }
-
-        });
-    }
     //Definicion para crear un nuevo usuario
     var alojamiento = new Alojamiento({
         estudiante: estudianteId,
@@ -140,11 +70,11 @@ app.post('/:id', (req, res) => {
         },
 
         imagenes: {
-            imgSala: `./uploads/alojamientos/${nombreFinalSala}`,
-            imgBanio: `./uploads/alojamientos/${nombreFinalBanio}`,
-            imgCocina: `./uploads/alojamientos/${nombreFinalCocina}`,
-            imgHabitacion: `./uploads/alojamientos/${nombreFinalHabitacion}`,
-            imgFachada: `./uploads/alojamientos/${nombreFinalFachada}`
+            imgSala: '',
+            imgBanio: '',
+            imgCocina: '',
+            imgHabitacion: '',
+            imgFachada: ''
         },
 
         mascota: {
@@ -195,7 +125,7 @@ app.post('/:id', (req, res) => {
             alimentacionIncluida: body.alimentacionIncluida,
             aseoHabitacion: body.aseoHabitacion,
             lavadoRopa: body.lavadoRopa,
-            servicioTVCable: body.servicioTVCable,
+            servicioTVCable: body.television,
             lavadora: body.lavadora,
             accesoLlaves: body.accesoLlaves,
             electrodomesticos: body.electrodomesticos,
@@ -222,7 +152,6 @@ app.post('/:id', (req, res) => {
         }
     });
 
-
     //metodo para guardar nuevo usuario
     alojamiento.save((err, alojamientoGuardado) => {
         if (err) {
@@ -242,11 +171,134 @@ app.post('/:id', (req, res) => {
 });
 
 
+app.use(fileUpload());
+
+app.put('/:idAlojamiento', (req, res) => {
+
+    var alojamientoid = req.params.id;
+
+    Alojamiento.findById(idAlojamiento, (err, alojamiento) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'fallo al buscar alojamiento',
+                errors: err
+
+            });
+        }
+        if (!alojamiento) {
+            res.status(400).json({
+                ok: true,
+                mensaje: 'El alojamiento con id ' + idAlojamiento + ' no existe',
+            })
+        }
 
 
+        if (!req.files) {
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'Debe seleccionar una imagen'
+            });
+        }
+
+        var sala = req.files.imgSala;
+        var banio = req.files.imgBanio;
+        var cocina = req.files.imgCocina;
+        var habitacion = req.files.imgHabitacion;
+        var fachada = req.files.imgFachada;
+        var archivos = [sala, banio, cocina, habitacion, fachada];
+
+
+        // Nombres de archivos
+        var nombreSala = sala.name.split('.');
+        var nombreBanio = banio.name.split('.');
+        var nombreCocina = cocina.name.split('.');
+        var nombreHabitacion = habitacion.name.split('.');
+        var nombreFachada = fachada.name.split('.');
+
+
+        // Extendsion de archivos
+        var extensionSala = nombreSala[nombreSala.length - 1];
+        var extensionBanio = nombreBanio[nombreBanio.length - 1];
+        var extensionCocina = nombreCocina[nombreCocina.length - 1];
+        var extensionHabitacion = nombreHabitacion[nombreHabitacion.length - 1];
+        var extensionFachada = nombreFachada[nombreFachada.length - 1];
+        var extensiones = [extensionSala, extensionBanio, extensionCocina, extensionHabitacion, extensionFachada];
+
+        // Extensiones Validas
+        var extensionesValidas = ['png', 'PNG', 'JPG', 'jpg', 'jpeg', 'JPEG'];
+        console.log(extensiones.length);
+
+        for (var i = 0; i < extensiones.length; i++) {
+            if (extensionesValidas.indexOf(extensiones[i]) < 0) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Extension no valida',
+                    error: extensionesValidas.join(', ')
+                });
+            }
+
+        }
+
+        // Nombres de archivos personalizados
+        var nombreFinalSala = `${estudianteId}-${new Date().getMilliseconds()}-1.${extensionSala}`;
+        var nombreFinalBanio = `${estudianteId}-${new Date().getMilliseconds()}-2.${extensionBanio}`;
+        var nombreFinalCocina = `${estudianteId}-${new Date().getMilliseconds()}-3.${extensionCocina}`;
+        var nombreFinalHabitacion = `${estudianteId}-${new Date().getMilliseconds()}-4.${extensionHabitacion}`;
+        var nombreFinalFachada = `${estudianteId}-${new Date().getMilliseconds()}-5.${extensionFachada}`;
+
+        var archivosFinales = [nombreFinalSala, nombreFinalBanio, nombreFinalCocina, nombreFinalHabitacion, nombreFinalFachada];
+
+        for (var i = 0; i < archivosFinales.length; i++) {
+            var path = `./uploads/alojamientos/${archivosFinales[i]}`;
+            archivos[i].mv(path, err => {
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        mensaje: 'Error al mover archivo'
+                    })
+                }
+
+            });
+        }
+
+        alojamiento.imagenes.imgSala = `/uploads/alojamientos/${nombreFinalSala}`;
+        alojamiento.imagenes.imgBanio = `/uploads/alojamientos/${nombreFinalBanio}`;
+        alojamiento.imagenes.imgCocina = `/uploads/alojamientos/${nombreFinalCocina}`;
+        alojamiento.imagenes.imgHabitacion = `/uploads/alojamientos/${nombreFinalHabitacion}`;
+        alojamiento.imagenes.imgFachada = `/uploads/alojamientos/${nombreFinalFachada}`;
+
+        alojamiento.save((err, alojamientoGuardado) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({
+                        ok: false,
+                        mensaje: "error al actualizar el Alojamiento",
+                        error: err
+                    });
+
+            }
+
+            return res
+                .status(200)
+                .json({
+                    ok: true,
+                    mensaje: "Alojamiento actualizado correctamente",
+                    alojamientoGuardado: alojamientoGuardado
+                });
+        });
+
+
+    });
+});
+
+
+
+/*
 // Actualizar alojamiento
 //id: variable para capturar un usuario
-app.put('/:idAlojamiento/:idAdmin', (req, res) => {
+app.put('/:idAlojamiento', (req, res) => {
     var idAlojamiento = req.params.idAlojamiento;
     Alojamiento.findById(idAlojamiento, (err, alojamiento) => {
         if (err) {
@@ -266,89 +318,13 @@ app.put('/:idAlojamiento/:idAdmin', (req, res) => {
         //listos para actualizar la data
         var body = req.body;
         //hospital.usuario = req.usuario._id;
-        alojamiento.administrador = req.params.idAdmin;
-        alojamiento.tipoVivienda = body.tipoVivienda;
-        alojamiento.tipoHabitacion = body.tipoHabitacion;
 
-        alojamiento.propiedadesAlojamiento.descripcionAlojamiento = body.descripcionAlojamiento;
-        alojamiento.propiedadesAlojamiento.clasificacionAlojamiento = body.clasificacionAlojamiento;
-        alojamiento.propiedadesAlojamiento.estadoAlojamiento = body.estadoAlojamiento;
-        alojamiento.propiedadesAlojamiento.estadoPublicacionAlojamiento = body.estadoPublicacionAlojamiento;
-        alojamiento.propiedadesAlojamiento.fechaPublicacionAlojamiento = body.fechaPublicacionAlojamiento;
-
-        alojamiento.sedeCercana = body.sedeCercana;
-        alojamiento.hospedanA = body.hospedanA;
-
-        alojamiento.ubicacion.latitud = body.latitud;
-        alojamiento.ubicacion.longitud = body.longitud;
-        alojamiento.ubicacion.zona = body.zona;
-
-        alojamiento.imagenes.imgSala = body.imgSala;
-        alojamiento.imagenes.imgBanio = body.imgBanio;
+        alojamiento.imagenes.imgSala = `/uploads/alojamientos/${nombreFinalSala}`;
+        alojamiento.imagenes.imgBanio = `/uploads/alojamientos/${nombreFinalBanio}`;
         alojamiento.imagenes.imgCocina = body.imgCocina;
         alojamiento.imagenes.imgHabitacion = body.imgHabitacion;
         alojamiento.imagenes.imgFachada = body.imgFachada;
 
-        alojamiento.mascota.habitaMascota = body.habitaMascota;
-        alojamiento.mascota.tipoMascota = body.tipoMascota;
-
-        alojamiento.normasAlojamiento.horaLlegada = body.horaLlegada;
-        alojamiento.normasAlojamiento.franjaLlegada = body.franjaLlegada;
-        alojamiento.normasAlojamiento.accesoOtrasPersonas = body.accesoOtrasPersonas;
-        alojamiento.normasAlojamiento.fiestasEventos = body.fiestasEventos;
-        alojamiento.normasAlojamiento.nivelVolumen = body.nivelVolumen;
-        alojamiento.normasAlojamiento.ritosExorcismosOrgias = body.ritosExorcismosOrgias;
-        alojamiento.normasAlojamiento.permiteConsumoAlcohol = body.permiteConsumoAlcohol;
-        alojamiento.normasAlojamiento.permiteConsumoDrogas = body.permiteConsumoDrogas;
-
-        alojamiento.transporte.publico = body.publico;
-        alojamiento.transporte.bicicleta = body.bicicleta;
-        alojamiento.transporte.taxi = body.taxi;
-        alojamiento.transporte.caminando = body.caminando;
-        alojamiento.transporte.metro = body.metro;
-
-        alojamiento.lugaresCercanos.centrosComerciales = body.centrosComerciales;
-        alojamiento.lugaresCercanos.museos = body.museos;
-        alojamiento.lugaresCercanos.restaurantes = body.restaurantes;
-        alojamiento.lugaresCercanos.bares = body.bares;
-        alojamiento.lugaresCercanos.iglesias = body.iglesias;
-        alojamiento.lugaresCercanos.hospitales = body.hospitales;
-        alojamiento.lugaresCercanos.teatros = body.teatros;
-        alojamiento.lugaresCercanos.parques = body.parques;
-        alojamiento.lugaresCercanos.zonasComerciales = body.zonasComerciales;
-        alojamiento.lugaresCercanos.zonasCulturales = body.zonasCulturales;
-        alojamiento.lugaresCercanos.gimnasio = body.gimnasio;
-
-        alojamiento.servicios.internet = body.internet;
-        alojamiento.servicios.computador = body.computador;
-        alojamiento.servicios.television = body.television;
-        alojamiento.servicios.videoJuegos = body.videoJuegos;
-        alojamiento.servicios.serviciosPublicos = body.serviciosPublicos;
-        alojamiento.servicios.aguaCaliente = body.aguaCaliente;
-        alojamiento.servicios.alimentacionIncluida = body.alimentacionIncluida;
-        alojamiento.servicios.aseoHabitacion = body.aseoHabitacion;
-        alojamiento.servicios.lavadoRopa = body.lavadoRopa;
-        alojamiento.servicios.servicioTVCable = body.servicioTVCable;
-        alojamiento.servicios.lavadora = body.lavadora;
-        alojamiento.servicios.accesoLlaves = body.accesoLlaves;
-        alojamiento.servicios.electrodomesticos = body.electrodomesticos;
-        alojamiento.servicios.banioPrivado = body.banioPrivado;
-        alojamiento.servicios.tipoCama = body.tipoCama;
-        alojamiento.servicios.electrodomesticosDeCocina = body.electrodomesticosDeCocina;
-        alojamiento.servicios.alarma = body.alarma;
-        alojamiento.servicios.guardaRopa = body.guardaRopa;
-
-        alojamiento.componentes.numeroHabitaciones = body.numeroHabitaciones;
-        alojamiento.componentes.cantidadBanios = body.cantidadBanios;
-        alojamiento.componentes.accesoCocina = body.accesoCocina;
-        alojamiento.componentes.espacioEstudio = body.espacioEstudio;
-        alojamiento.componentes.sePermiteFumar = body.sePermiteFumar;
-        alojamiento.componentes.espacioAireLibre = body.espacioAireLibre;
-        alojamiento.componentes.accesoSala = body.accesoSala;
-
-        alojamiento.costumbres.habitosAlimenticios = body.habitosAlimenticios;
-        alojamiento.costumbres.consumoDrogas = body.consumoDrogas;
-        alojamiento.costumbres.consumoAlcohol = body.consumoAlcohol;
 
         alojamiento.save((err, alojamientoGuardado) => {
             if (err) {
@@ -371,7 +347,7 @@ app.put('/:idAlojamiento/:idAdmin', (req, res) => {
                 });
         });
     });
-});
+});*/
 
 
 // Eliminar Alojamiento
