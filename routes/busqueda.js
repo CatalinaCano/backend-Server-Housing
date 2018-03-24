@@ -114,10 +114,10 @@ app.get('/alojamientos/:sede/:hospedan/:hospedaje/:habitacion', (req, res) => {
 // /new?portfolioId&param1&param2
 app.get('/admin', (req, res, next) => {
 
-    var sede = req.params('sede');
-    var hospedanA = req.params('hospedanA');
-    var estadoAlojamiento = req.params('estadoAlojamiento');
-    var estadoPublicacionAlojamiento = req.params('estadoPublicacionAlojamiento');
+    var sede = req.param('sede');
+    var hospedanA = req.param('hospedanA');
+    var estadoAlojamiento = req.param('estadoAlojamiento');
+    var estadoPublicacionAlojamiento = req.param('estadoPublicacionAlojamiento');
     var desde = req.query.desde || 0;
     desde = Number(desde);
 
@@ -125,8 +125,8 @@ app.get('/admin', (req, res, next) => {
     Promise.all([
             buscarPorSedeAlojamiento(sede, desde),
             buscarPorTipoPersona(hospedanA, desde),
-            buscarPorEstadosAlojamiento(hospedanA, desde),
-            buscarPorEstadosPublicacionAlojamiento(hospedanA, desde)
+            buscarPorEstadosAlojamiento(estadoAlojamiento, desde),
+            buscarPorEstadosPublicacionAlojamiento(estadoPublicacionAlojamiento, desde)
         ])
         .then(respuestas => {
             res.status(202).json({
@@ -134,8 +134,8 @@ app.get('/admin', (req, res, next) => {
                 mensaje: 'Petición realizada correctamente - admin',
                 sedesAlojamientos: respuestas[0],
                 tipoPersonas: respuestas[1],
-                estadosAlojamientos: respuestas[2],
-                estadosPublicacionAlojamiento: respuestas[3]
+                estadoAlojamiento: respuestas[2],
+                estadoPublicacionAlojamiento: respuestas[3]
 
             }); // Todo se hizo corriendo correctamente
         })
@@ -233,9 +233,11 @@ function buscarPorSedeAlojamiento(sede, desde) {
 }
 
 function buscarPorEstadosAlojamiento(estadoAlojamiento, desde) {
+    console.log(estadoAlojamiento);
     return new Promise((resolve, reject) => {
         Alojamiento.find({
-                'estadoAlojamiento': estadoAlojamiento
+
+                'propiedadesAlojamiento.estadoAlojamiento': estadoAlojamiento
             })
             .populate('estudiante', 'role email')
             .skip(desde)
@@ -256,7 +258,7 @@ function buscarPorEstadosAlojamiento(estadoAlojamiento, desde) {
 function buscarPorEstadosPublicacionAlojamiento(estadoPublicacionAlojamiento, desde) {
     return new Promise((resolve, reject) => {
         Alojamiento.find({
-                'estadoPublicacionAlojamiento': estadoPublicacionAlojamiento
+                'propiedadesAlojamiento.estadoPublicacionAlojamiento': estadoPublicacionAlojamiento
             })
             .populate('estudiante', 'role email')
             .skip(desde)
@@ -273,10 +275,6 @@ function buscarPorEstadosPublicacionAlojamiento(estadoPublicacionAlojamiento, de
             })
     });
 }
-
-
-
-
 
 function buscarEnEstudiante(busqueda, regex) {
     return new Promise((resolve, reject) => {
