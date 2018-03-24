@@ -294,6 +294,53 @@ app.put('/:idAlojamiento', (req, res) => {
     });
 });
 
+app.put('/estadoAlojamiento/:idAlojamiento/:estadoAlojamiento', (req, res) => {
+    var idAlojamiento = req.params.idAlojamiento;
+    var estado = req.params.estadoAlojamiento;
+    Alojamiento.findById(idAlojamiento, (err, alojamiento) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'fallo al buscar alojamiento',
+                errors: err
+
+            });
+        }
+        if (!alojamiento) {
+            res.status(400).json({
+                ok: true,
+                mensaje: 'El alojamiento con id ' + idAlojamiento + ' no existe',
+            })
+        }
+
+        alojamiento.propiedadesAlojamiento.estadoPublicacionAlojamiento = estado;
+
+        alojamiento.save((err, alojamientoGuardado) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({
+                        ok: false,
+                        mensaje: "error al actualizar el Alojamiento",
+                        error: err
+                    });
+
+            }
+
+            return res
+                .status(200)
+                .json({
+                    ok: true,
+                    mensaje: "Alojamiento actualizado correctamente",
+                    alojamientoGuardado: alojamientoGuardado
+                });
+        });
+
+
+    });
+
+});
+
 // Eliminar Alojamiento
 app.delete('/:id', (req, res) => {
     var id = req.params.id;

@@ -44,11 +44,12 @@ app.post('/enEstudio/:correo', (req, res, next) => {
 
 app.post('/rechazado', (req, res, next) => {
     var observaciones = req.body.observaciones;
+    var correoEstudiante = req.body.email;
     const mailOptions = {
         from: 'HousingUD ' + MAIL_ADMIN,
         to: correoEstudiante,
         subject: 'Alojamiento Rechazado',
-        html: '<h1>Lo sentimos!</h1><p>Lamentamos informarte que tu alojamiento,ha sido rechazado. El administrador tiene las siguientes observaciones para ti:</p> <br>' + observaciones + 'Cordialmente, <br> Administrador Housing UD '
+        html: '<h1>Lo sentimos!</h1><p>Lamentamos informarte que tu alojamiento,ha sido rechazado. El administrador tiene las siguientes observaciones para ti:</p> ' + observaciones + '<p> Cordialmente, <br> Administrador Housing UD </p>'
     };
 
     transporter.sendMail(mailOptions, function(err, info) {
@@ -68,11 +69,12 @@ app.post('/rechazado', (req, res, next) => {
 
 app.post('/aceptado', (req, res, next) => {
     var observaciones = req.body.observaciones;
+    var correoEstudiante = req.body.email;
     const mailOptions = {
         from: 'HousingUD ' + MAIL_ADMIN,
         to: correoEstudiante,
         subject: 'Alojamiento Aceptado',
-        html: '<h1>Felicidades!!!</h1><p>Hola, nos complace informarte que tu alojamiento,ha sido aceptado. El administrador tiene las siguientes observaciones para ti:</p> <br>' + observaciones + 'Cordialmente, <br> Administrador Housing UD '
+        html: '<h1>Felicidades!!!</h1><p>Hola, nos complace informarte que tu alojamiento,ha sido aceptado. El administrador tiene las siguientes observaciones para ti:</p> ' + observaciones + '<p> Cordialmente, <br> Administrador Housing UD </p>'
     };
 
     transporter.sendMail(mailOptions, function(err, info) {

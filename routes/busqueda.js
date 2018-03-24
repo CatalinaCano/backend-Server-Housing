@@ -146,28 +146,30 @@ app.get('/alojamiento/:idAlojamiento', (req, res) => {
     var alojamientoid = req.params.idAlojamiento;
     console.log(alojamientoid);
 
-    Alojamiento.findById(alojamientoid, (err, alojamientoBD) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'fallo al buscar alojamiento',
-                errors: err
+    Alojamiento.findById(alojamientoid)
+        .populate('estudiante', 'role email')
+        .exec((err, alojamientoBD) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'fallo al buscar alojamiento',
+                    errors: err
 
-            });
-        }
-        if (!alojamientoBD) {
-            return res.status(400).json({
+                });
+            }
+            if (!alojamientoBD) {
+                return res.status(400).json({
+                    ok: true,
+                    mensaje: 'El alojamiento con id ' + idAlojamiento + ' no existe',
+                });
+            }
+
+            return res.status(200).json({
                 ok: true,
-                mensaje: 'El alojamiento con id ' + idAlojamiento + ' no existe',
+                mensaje: 'Alojamiento encontrado con exito',
+                alojamientoBD: alojamientoBD
             });
-        }
-
-        return res.status(200).json({
-            ok: true,
-            mensaje: 'Alojamiento encontrado con exito',
-            alojamientoBD: alojamientoBD
         });
-    });
 
 
     /*Alojamiento.findById(alojamientoid, (err, alojamiento) => {
