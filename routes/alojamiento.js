@@ -176,8 +176,9 @@ app.use(fileUpload());
 app.put('/:idAlojamiento', (req, res) => {
 
     var alojamientoid = req.params.idAlojamiento;
+    console.log(alojamientoid);
 
-    Alojamiento.findById(idAlojamiento, (err, alojamiento) => {
+    Alojamiento.findById(alojamientoid, (err, alojamiento) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
@@ -241,11 +242,11 @@ app.put('/:idAlojamiento', (req, res) => {
         }
 
         // Nombres de archivos personalizados
-        var nombreFinalSala = `${estudianteId}-${new Date().getMilliseconds()}-1.${extensionSala}`;
-        var nombreFinalBanio = `${estudianteId}-${new Date().getMilliseconds()}-2.${extensionBanio}`;
-        var nombreFinalCocina = `${estudianteId}-${new Date().getMilliseconds()}-3.${extensionCocina}`;
-        var nombreFinalHabitacion = `${estudianteId}-${new Date().getMilliseconds()}-4.${extensionHabitacion}`;
-        var nombreFinalFachada = `${estudianteId}-${new Date().getMilliseconds()}-5.${extensionFachada}`;
+        var nombreFinalSala = `${alojamientoid}-${new Date().getMilliseconds()}-1.${extensionSala}`;
+        var nombreFinalBanio = `${alojamientoid}-${new Date().getMilliseconds()}-2.${extensionBanio}`;
+        var nombreFinalCocina = `${alojamientoid}-${new Date().getMilliseconds()}-3.${extensionCocina}`;
+        var nombreFinalHabitacion = `${alojamientoid}-${new Date().getMilliseconds()}-4.${extensionHabitacion}`;
+        var nombreFinalFachada = `${alojamientoid}-${new Date().getMilliseconds()}-5.${extensionFachada}`;
 
         var archivosFinales = [nombreFinalSala, nombreFinalBanio, nombreFinalCocina, nombreFinalHabitacion, nombreFinalFachada];
 
