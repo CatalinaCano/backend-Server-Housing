@@ -294,63 +294,6 @@ app.put('/:idAlojamiento', (req, res) => {
     });
 });
 
-
-
-/*
-// Actualizar alojamiento
-//id: variable para capturar un usuario
-app.put('/:idAlojamiento', (req, res) => {
-    var idAlojamiento = req.params.idAlojamiento;
-    Alojamiento.findById(idAlojamiento, (err, alojamiento) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'fallo al buscar alojamiento',
-                errors: err
-
-            });
-        }
-        if (!alojamiento) {
-            res.status(400).json({
-                ok: true,
-                mensaje: 'El alojamiento con id ' + idAlojamiento + ' no existe',
-            })
-        }
-        //listos para actualizar la data
-        var body = req.body;
-        //hospital.usuario = req.usuario._id;
-
-        alojamiento.imagenes.imgSala = `/uploads/alojamientos/${nombreFinalSala}`;
-        alojamiento.imagenes.imgBanio = `/uploads/alojamientos/${nombreFinalBanio}`;
-        alojamiento.imagenes.imgCocina = body.imgCocina;
-        alojamiento.imagenes.imgHabitacion = body.imgHabitacion;
-        alojamiento.imagenes.imgFachada = body.imgFachada;
-
-
-        alojamiento.save((err, alojamientoGuardado) => {
-            if (err) {
-                return res
-                    .status(400)
-                    .json({
-                        ok: false,
-                        mensaje: "error al actualizar el Alojamiento",
-                        error: err
-                    });
-
-            }
-
-            return res
-                .status(200)
-                .json({
-                    ok: true,
-                    mensaje: "Alojamiento actualizado correctamente",
-                    alojamientoGuardado: alojamientoGuardado
-                });
-        });
-    });
-});*/
-
-
 // Eliminar Alojamiento
 app.delete('/:id', (req, res) => {
     var id = req.params.id;

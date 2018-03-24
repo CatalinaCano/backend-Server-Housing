@@ -114,10 +114,10 @@ app.get('/alojamientos/:sede/:hospedan/:hospedaje/:habitacion', (req, res) => {
 // /new?portfolioId&param1&param2
 app.get('/admin', (req, res, next) => {
 
-    var sede = req.param('sede');
-    var hospedanA = req.param('hospedanA');
-    var estadoAlojamiento = req.param('estadoAlojamiento');
-    var estadoPublicacionAlojamiento = req.param('estadoPublicacionAlojamiento');
+    var sede = req.params('sede');
+    var hospedanA = req.params('hospedanA');
+    var estadoAlojamiento = req.params('estadoAlojamiento');
+    var estadoPublicacionAlojamiento = req.params('estadoPublicacionAlojamiento');
     var desde = req.query.desde || 0;
     desde = Number(desde);
 
@@ -139,6 +139,54 @@ app.get('/admin', (req, res, next) => {
 
             }); // Todo se hizo corriendo correctamente
         })
+});
+
+
+app.get('/alojamiento/:idAlojamiento', (req, res) => {
+    var alojamientoid = req.params.idAlojamiento;
+    console.log(alojamientoid);
+
+    Alojamiento.findById(alojamientoid, (err, alojamientoBD) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'fallo al buscar alojamiento',
+                errors: err
+
+            });
+        }
+        if (!alojamientoBD) {
+            return res.status(400).json({
+                ok: true,
+                mensaje: 'El alojamiento con id ' + idAlojamiento + ' no existe',
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            mensaje: 'Alojamiento encontrado con exito',
+            alojamientoBD: alojamientoBD
+        });
+    });
+
+
+    /*Alojamiento.findById(alojamientoid, (err, alojamiento) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'fallo al buscar alojamiento',
+                errors: err
+
+            });
+        }
+        if (!alojamiento) {
+            return res.status(400).json({
+                ok: true,
+                mensaje: 'El alojamiento con id ' + idAlojamiento + ' no existe',
+            })
+        }
+        return alojamiento;
+    });*/
 });
 
 

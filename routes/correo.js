@@ -38,9 +38,56 @@ app.post('/enEstudio/:correo', (req, res, next) => {
                 mensaje: 'Petición realizada correctamente'
             });
     });
-
-
 });
 
+
+
+app.post('/rechazado', (req, res, next) => {
+    var observaciones = req.body.observaciones;
+    const mailOptions = {
+        from: 'HousingUD ' + MAIL_ADMIN,
+        to: correoEstudiante,
+        subject: 'Alojamiento Rechazado',
+        html: '<h1>Lo sentimos!</h1><p>Lamentamos informarte que tu alojamiento,ha sido rechazado. El administrador tiene las siguientes observaciones para ti:</p> <br>' + observaciones + 'Cordialmente, <br> Administrador Housing UD '
+    };
+
+    transporter.sendMail(mailOptions, function(err, info) {
+        if (err)
+            return res.status(505).json({
+                ok: false,
+                mensaje: 'La Petición no pudo ser realizada correctamente',
+                err: err
+            });
+        else
+            return res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente'
+            });
+    });
+});
+
+app.post('/aceptado', (req, res, next) => {
+    var observaciones = req.body.observaciones;
+    const mailOptions = {
+        from: 'HousingUD ' + MAIL_ADMIN,
+        to: correoEstudiante,
+        subject: 'Alojamiento Aceptado',
+        html: '<h1>Felicidades!!!</h1><p>Hola, nos complace informarte que tu alojamiento,ha sido aceptado. El administrador tiene las siguientes observaciones para ti:</p> <br>' + observaciones + 'Cordialmente, <br> Administrador Housing UD '
+    };
+
+    transporter.sendMail(mailOptions, function(err, info) {
+        if (err)
+            return res.status(505).json({
+                ok: false,
+                mensaje: 'La Petición no pudo ser realizada correctamente',
+                err: err
+            });
+        else
+            return res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente'
+            });
+    });
+});
 // Exporatacion para hacer uso de ella en cualquier modulo
 module.exports = app;

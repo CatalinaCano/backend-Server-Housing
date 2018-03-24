@@ -7,7 +7,7 @@ var app = express(); // Levantar la app
 
 
 // Rutas
-app.get('/:img', (req, res, next) => {
+app.get('/uploads/alojamientos/:img', (req, res, next) => {
     var img = req.params.img;
 
     var path = `./uploads/alojamientos/${ img }`;
