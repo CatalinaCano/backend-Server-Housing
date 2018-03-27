@@ -29,7 +29,24 @@ app.get('/todo/:busqueda', (req, res, next) => {
                 sedes: respuestas[0],
                 alojamientos: respuestas[1]
             }); // Todo se hizo corriendo correctamente
-        })
+        });
+});
+
+
+
+app.get('/admin/usuarios/:busqueda', (req, res) => {
+    var busqueda = req.params.busqueda;
+    //Expresion regular para poder buscar sin que se afecteen mayusculas y minusculas
+    var regex = new RegExp(busqueda, 'i');
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+    buscarEstudianteCorreoSede(busqueda, regex, desde).then(estudiantes => {
+        res.status(202).json({
+            ok: true,
+            mensaje: 'Petición realizada correctamente',
+            estudiantes: estudiantes
+        }); // Todo se hizo corriendo correctamente
+    });
 });
 
 // Busqueda de alojamientos Disponibles y aceptados para la galeria
@@ -269,15 +286,22 @@ function buscarEnEstudiante(busqueda, regex) {
     });
 }
 
-function buscarEnEstudiante(busqueda, regex) {
+function buscarEstudianteCorreoSede(busqueda, regex, desde) {
     return new Promise((resolve, reject) => {
-        Estudiante.find({ perteneceA: regex }, (err, sedes) => {
-            if (err) {
-                reject('Error al cargar las sedes de los estudiantes');
-            } else {
-                resolve(sedes);
-            }
-        });
+        Estudiante.find({})
+            .skip(desde)
+            .limit(5)
+            .or([{ 'perteneceA': regex }, { 'email': regex }])
+            .exec((err, estudiantes) => {
+                if (err) {
+                    reject('Error al cargar las sedes de los estudiantes');
+                } else {
+
+                    Alojamiento.count({}, (err, total) => {
+                        resolve(estudiantes, total);
+                    })
+                }
+            });
     });
 }
 
