@@ -116,5 +116,54 @@ app.post('/eliminado/:correo', (req, res, next) => {
             });
     });
 });
+
+app.post('/disponible/:correo', (req, res, next) => {
+    var correoEstudiante = req.params.correo;
+    const mailOptions = {
+        from: 'HousingUD ' + MAIL_ADMIN,
+        to: correoEstudiante,
+        subject: 'Alojamiento Disponible',
+        html: '<h1>Atención!!</h1><p>Te informarmamos que el administrador de Housing ha notificado que tu alojamiento se encuentra <strong>DISPONIBLE</strong>  dentro del sistema. Si tienes alguna novedad al respecto te invitamos acercarte al CERI. </p>  Cordialmente, <br> Administrador Housing UD </p>'
+    };
+
+    transporter.sendMail(mailOptions, function(err, info) {
+        if (err)
+            return res.status(505).json({
+                ok: false,
+                mensaje: 'La Petición no pudo ser realizada correctamente',
+                err: err
+            });
+        else
+            return res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente'
+            });
+    });
+});
+
+app.post('/ocupado/:correo', (req, res, next) => {
+    var correoEstudiante = req.params.correo;
+    const mailOptions = {
+        from: 'HousingUD ' + MAIL_ADMIN,
+        to: correoEstudiante,
+        subject: 'Alojamiento Eliminado',
+        html: '<h1>Atención!!</h1><p>Te informarmamos que el administrador de Housing ha notificado que tu alojamiento se encuentra <strong>OCUPADO</strong> dentro del sistema. Si tienes alguna novedad al respecto te invitamos acercarte al CERI. </p>  Cordialmente, <br> Administrador Housing UD </p>'
+    };
+
+    transporter.sendMail(mailOptions, function(err, info) {
+        if (err)
+            return res.status(505).json({
+                ok: false,
+                mensaje: 'La Petición no pudo ser realizada correctamente',
+                err: err
+            });
+        else
+            return res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente'
+            });
+    });
+});
+
 // Exporatacion para hacer uso de ella en cualquier modulo
 module.exports = app;
