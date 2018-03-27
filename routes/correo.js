@@ -91,5 +91,30 @@ app.post('/aceptado', (req, res, next) => {
             });
     });
 });
+
+
+app.post('/eliminado/:correo', (req, res, next) => {
+    var correoEstudiante = req.params.correo;
+    const mailOptions = {
+        from: 'HousingUD ' + MAIL_ADMIN,
+        to: correoEstudiante,
+        subject: 'Alojamiento Eliminado',
+        html: '<h1>Lo Sentimos!!!</h1><p>lamentamos informarte que el administrador de Housing ha eliminado tu alojamiento dentro del sistema. Si tienes alguna novedad al respecto te invitamos acercarte al CERI. </p>  Cordialmente, <br> Administrador Housing UD </p>'
+    };
+
+    transporter.sendMail(mailOptions, function(err, info) {
+        if (err)
+            return res.status(505).json({
+                ok: false,
+                mensaje: 'La Petición no pudo ser realizada correctamente',
+                err: err
+            });
+        else
+            return res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente'
+            });
+    });
+});
 // Exporatacion para hacer uso de ella en cualquier modulo
 module.exports = app;

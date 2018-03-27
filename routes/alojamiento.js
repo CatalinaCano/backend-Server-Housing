@@ -278,9 +278,7 @@ app.put('/:idAlojamiento', (req, res) => {
                         mensaje: "error al actualizar el Alojamiento",
                         error: err
                     });
-
             }
-
             return res
                 .status(200)
                 .json({
@@ -340,8 +338,6 @@ app.put('/estadoAlojamiento/:idAlojamiento/:estadoAlojamiento', (req, res) => {
     });
 
 });
-
-
 
 
 
