@@ -117,7 +117,7 @@ app.post('/eliminado/:correo', (req, res, next) => {
     });
 });
 
-app.post('/disponible/:correo', (req, res, next) => {
+app.post('/Disponible/:correo', (req, res, next) => {
     var correoEstudiante = req.params.correo;
     const mailOptions = {
         from: 'HousingUD ' + MAIL_ADMIN,
@@ -141,12 +141,12 @@ app.post('/disponible/:correo', (req, res, next) => {
     });
 });
 
-app.post('/ocupado/:correo', (req, res, next) => {
+app.post('/Ocupado/:correo', (req, res, next) => {
     var correoEstudiante = req.params.correo;
     const mailOptions = {
         from: 'HousingUD ' + MAIL_ADMIN,
         to: correoEstudiante,
-        subject: 'Alojamiento Eliminado',
+        subject: 'Alojamiento Ocupado',
         html: '<h1>Atención!!</h1><p>Te informarmamos que el administrador de Housing ha notificado que tu alojamiento se encuentra <strong>OCUPADO</strong> dentro del sistema. Si tienes alguna novedad al respecto te invitamos acercarte al CERI. </p>  Cordialmente, <br> Administrador Housing UD </p>'
     };
 
