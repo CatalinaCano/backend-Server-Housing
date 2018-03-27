@@ -170,25 +170,6 @@ app.get('/alojamiento/:idAlojamiento', (req, res) => {
                 alojamientoBD: alojamientoBD
             });
         });
-
-
-    /*Alojamiento.findById(alojamientoid, (err, alojamiento) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'fallo al buscar alojamiento',
-                errors: err
-
-            });
-        }
-        if (!alojamiento) {
-            return res.status(400).json({
-                ok: true,
-                mensaje: 'El alojamiento con id ' + idAlojamiento + ' no existe',
-            })
-        }
-        return alojamiento;
-    });*/
 });
 
 
