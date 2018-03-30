@@ -32,6 +32,23 @@ app.get('/todo/:busqueda', (req, res, next) => {
         });
 });
 
+app.get('/admin/alojamientos/:termino', (req, res) => {
+    var busqueda = req.params.busqueda;
+    //Expresion regular para poder buscar sin que se afecteen mayusculas y minusculas
+    var regex = new RegExp(busqueda, 'i');
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+    buscarEnAlojamientoDisponibleyAceptado(busqueda, regex)
+        .then(alojamientos => {
+            res.status(202).json({
+                ok: true,
+                mensaje: 'Petición realizada correctamente',
+                alojamientos: alojamientos
+            }); // Todo se hizo corriendo correctamente
+        });
+
+});
+
 
 
 app.get('/admin/usuarios/:busqueda', (req, res) => {
@@ -125,6 +142,8 @@ app.get('/alojamientos/:sede/:hospedan/:hospedaje/:habitacion', (req, res) => {
 });
 
 
+
+
 // Busqueda en simultanea de administrador
 // Busqueda por todo
 
@@ -155,7 +174,7 @@ app.get('/admin', (req, res, next) => {
                 estadoPublicacionAlojamiento: respuestas[3]
 
             }); // Todo se hizo corriendo correctamente
-        })
+        });
 });
 
 
