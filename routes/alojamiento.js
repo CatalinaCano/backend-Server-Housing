@@ -12,7 +12,7 @@ var archivo;
 
 //Importar modelo de  Administrador
 var Alojamiento = require('../models/alojamiento');
-
+var Estudiante = require('../models/estudiante');
 
 //Metodo para obtener  alojamientos
 app.get('/', (req, res) => {
@@ -47,127 +47,145 @@ app.post('/:idEstudiante', (req, res) => {
     var estudianteId = req.params.idEstudiante;
     var body = req.body;
 
-    //Definicion para crear un nuevo usuario
-    var alojamiento = new Alojamiento({
-        estudiante: estudianteId,
-        tipoVivienda: body.tipoVivienda,
-        tipoHabitacion: body.tipoHabitacion,
-        propiedadesAlojamiento: {
-            descripcionAlojamiento: body.descripcionAlojamiento,
-            clasificacionAlojamiento: body.clasificacionAlojamiento,
-            estadoAlojamiento: body.estadoAlojamiento,
-            estadoPublicacionAlojamiento: body.estadoPublicacionAlojamiento,
-            fechaPublicacionAlojamiento: body.fechaPublicacionAlojamiento
-        },
+    Alojamiento.find({ 'estudiante': estudianteId })
+        .exec((err, estudiante) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: "Error al Estudiante del  alojamientos",
+                    errors: err
+                });
+            }
+            if (estudiante) {
+                return res.status(404).json({
+                    ok: false,
+                    mensaje: "Error ya existe un alojamiento asociado a ese estudiante",
+                    errors: "Error ya existe un alojamiento asociado a ese estudiante",
+                });
+            }
+            if (!estudiante) {
+                var alojamiento = new Alojamiento({
+                    estudiante: estudianteId,
+                    tipoVivienda: body.tipoVivienda,
+                    tipoHabitacion: body.tipoHabitacion,
+                    propiedadesAlojamiento: {
+                        descripcionAlojamiento: body.descripcionAlojamiento,
+                        clasificacionAlojamiento: body.clasificacionAlojamiento,
+                        estadoAlojamiento: body.estadoAlojamiento,
+                        estadoPublicacionAlojamiento: body.estadoPublicacionAlojamiento,
+                        fechaPublicacionAlojamiento: body.fechaPublicacionAlojamiento
+                    },
 
-        sedeCercana: body.sedeCercana,
-        hospedanA: body.hospedanA,
+                    sedeCercana: body.sedeCercana,
+                    hospedanA: body.hospedanA,
 
-        ubicacion: {
-            latitud: body.latitud,
-            longitud: body.longitud,
-            zona: body.zona
-        },
+                    ubicacion: {
+                        latitud: body.latitud,
+                        longitud: body.longitud,
+                        zona: body.zona
+                    },
 
-        imagenes: {
-            imgSala: '',
-            imgBanio: '',
-            imgCocina: '',
-            imgHabitacion: '',
-            imgFachada: ''
-        },
+                    imagenes: {
+                        imgSala: '',
+                        imgBanio: '',
+                        imgCocina: '',
+                        imgHabitacion: '',
+                        imgFachada: ''
+                    },
 
-        mascota: {
-            habitaMascota: body.habitaMascota
-        },
+                    mascota: {
+                        habitaMascota: body.habitaMascota
+                    },
 
-        normasAlojamiento: {
-            horaLlegada: body.horaLlegada,
-            franjaLlegada: body.franjaLlegada,
-            accesoOtrasPersonas: body.accesoOtrasPersonas,
-            fiestasEventos: body.fiestasEventos,
-            nivelVolumen: body.nivelVolumen,
-            ritosExorcismosOrgias: body.ritosExorcismosOrgias,
-            permiteConsumoAlcohol: body.permiteConsumoAlcohol,
-            permiteConsumoDrogas: body.permiteConsumoDrogas
-        },
+                    normasAlojamiento: {
+                        horaLlegada: body.horaLlegada,
+                        franjaLlegada: body.franjaLlegada,
+                        accesoOtrasPersonas: body.accesoOtrasPersonas,
+                        fiestasEventos: body.fiestasEventos,
+                        nivelVolumen: body.nivelVolumen,
+                        ritosExorcismosOrgias: body.ritosExorcismosOrgias,
+                        permiteConsumoAlcohol: body.permiteConsumoAlcohol,
+                        permiteConsumoDrogas: body.permiteConsumoDrogas
+                    },
 
-        transporte: {
-            publico: body.publico,
-            bicicleta: body.bicicleta,
-            taxi: body.taxi,
-            caminando: body.caminando,
-            metro: body.metro,
-            uber: body.uber
-        },
+                    transporte: {
+                        publico: body.publico,
+                        bicicleta: body.bicicleta,
+                        taxi: body.taxi,
+                        caminando: body.caminando,
+                        metro: body.metro,
+                        uber: body.uber
+                    },
 
-        lugaresCercanos: {
-            centrosComerciales: body.centrosComerciales,
-            museos: body.museos,
-            restaurantes: body.restaurantes,
-            bares: body.bares,
-            iglesias: body.iglesias,
-            hospitales: body.hospitales,
-            teatros: body.teatros,
-            parques: body.parques,
-            zonasComerciales: body.zonasComerciales,
-            zonasCulturales: body.zonasCulturales,
-            gimnasio: body.gimnasio
-        },
+                    lugaresCercanos: {
+                        centrosComerciales: body.centrosComerciales,
+                        museos: body.museos,
+                        restaurantes: body.restaurantes,
+                        bares: body.bares,
+                        iglesias: body.iglesias,
+                        hospitales: body.hospitales,
+                        teatros: body.teatros,
+                        parques: body.parques,
+                        zonasComerciales: body.zonasComerciales,
+                        zonasCulturales: body.zonasCulturales,
+                        gimnasio: body.gimnasio
+                    },
 
-        servicios: {
-            internet: body.internet,
-            computador: body.computador,
-            television: body.television,
-            videoJuegos: body.videoJuegos,
-            serviciosPublicos: body.serviciosPublicos,
-            aguaCaliente: body.aguaCaliente,
-            alimentacionIncluida: body.alimentacionIncluida,
-            aseoHabitacion: body.aseoHabitacion,
-            lavadoRopa: body.lavadoRopa,
-            servicioTVCable: body.television,
-            lavadora: body.lavadora,
-            accesoLlaves: body.accesoLlaves,
-            electrodomesticos: body.electrodomesticos,
-            banioPrivado: body.banioPrivado,
-            tipoCama: body.tipoCama,
-            electrodomesticosDeCocina: body.electrodomesticosDeCocina,
-            alarma: body.alarma,
-            guardaRopa: body.guardaRopa
-        },
-        componentes: {
-            numeroHabitaciones: body.numeroHabitaciones,
-            cantidadBanios: body.cantidadBanios,
-            accesoCocina: body.accesoCocina,
-            espacioEstudio: body.espacioEstudio,
-            sePermiteFumar: body.sePermiteFumar,
-            espacioAireLibre: body.espacioAireLibre,
-            accesoSala: body.accesoSala
-        },
+                    servicios: {
+                        internet: body.internet,
+                        computador: body.computador,
+                        television: body.television,
+                        videoJuegos: body.videoJuegos,
+                        serviciosPublicos: body.serviciosPublicos,
+                        aguaCaliente: body.aguaCaliente,
+                        alimentacionIncluida: body.alimentacionIncluida,
+                        aseoHabitacion: body.aseoHabitacion,
+                        lavadoRopa: body.lavadoRopa,
+                        servicioTVCable: body.television,
+                        lavadora: body.lavadora,
+                        accesoLlaves: body.accesoLlaves,
+                        electrodomesticos: body.electrodomesticos,
+                        banioPrivado: body.banioPrivado,
+                        tipoCama: body.tipoCama,
+                        electrodomesticosDeCocina: body.electrodomesticosDeCocina,
+                        alarma: body.alarma,
+                        guardaRopa: body.guardaRopa
+                    },
+                    componentes: {
+                        numeroHabitaciones: body.numeroHabitaciones,
+                        cantidadBanios: body.cantidadBanios,
+                        accesoCocina: body.accesoCocina,
+                        espacioEstudio: body.espacioEstudio,
+                        sePermiteFumar: body.sePermiteFumar,
+                        espacioAireLibre: body.espacioAireLibre,
+                        accesoSala: body.accesoSala
+                    },
 
-        costumbres: {
-            habitosAlimenticios: body.habitosAlimenticios,
-            consumoDrogas: body.consumoDrogas,
-            consumoAlcohol: body.consumoAlcohol
-        }
-    });
+                    costumbres: {
+                        habitosAlimenticios: body.habitosAlimenticios,
+                        consumoDrogas: body.consumoDrogas,
+                        consumoAlcohol: body.consumoAlcohol
+                    }
+                });
 
-    //metodo para guardar nuevo usuario
-    alojamiento.save((err, alojamientoGuardado) => {
-        if (err) {
-            return res.status(400).json({
-                ok: false,
-                mensaje: 'Error al crear Alojamiento',
-                error: err
-            });
-        }
-        res.status(201).json({
-            ok: true,
-            mensaje: 'Alojamiento creado con Éxito',
-            alojamientoGuardado: alojamientoGuardado
+                //metodo para guardar nuevo usuario
+                alojamiento.save((err, alojamientoGuardado) => {
+                    if (err) {
+                        return res.status(400).json({
+                            ok: false,
+                            mensaje: 'Error al crear Alojamiento',
+                            errors: err
+                        });
+                    }
+                    res.status(201).json({
+                        ok: true,
+                        mensaje: 'Alojamiento creado con Éxito',
+                        alojamientoGuardado: alojamientoGuardado
+                    });
+                });
+            }
+
         });
-    });
-
 });
 
 

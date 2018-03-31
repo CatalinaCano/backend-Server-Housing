@@ -143,11 +143,6 @@ app.get('/alojamientos/:sede/:hospedan/:hospedaje/:habitacion', (req, res) => {
 
 
 
-
-// Busqueda en simultanea de administrador
-// Busqueda por todo
-
-// /new?portfolioId&param1&param2
 app.get('/admin', (req, res, next) => {
 
     var sede = req.param('sede');

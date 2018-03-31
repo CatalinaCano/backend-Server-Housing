@@ -127,7 +127,7 @@ var alojamientoSchema = new Schema({
         clasificacionAlojamiento: { type: String, required: [true, 'La clasificacion del alojamiento es requerida'], enum: clasificacionAlojamientoValido }, //
         estadoAlojamiento: { type: String, required: [true, 'El estado del alojamiento es requerido'], default: 'Disponible', enum: estadoAlojamientoValido }, //
         estadoPublicacionAlojamiento: { type: String, required: [true, 'El estado de la publicacion es requerido'], default: 'En estudio', enum: estadoPublicacionAlojamientoValido },
-        fechaPublicacionAlojamiento: { type: String, required: [true, 'La fecha de publicacion es requerida'] }
+        fechaPublicacionAlojamiento: { type: String, required: [true, 'La fecha de publicacion es requerida'], default: Date.now }
     },
     sedeCercana: { type: String, required: [true, 'Debe seleccionar la sede mas cercana'], enum: sedesValidas },
     hospedanA: { type: String, required: [true, 'El tipo de persona a hospedar es requerido'], enum: hospedanAValido },
