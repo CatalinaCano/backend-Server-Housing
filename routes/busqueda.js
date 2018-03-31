@@ -352,7 +352,7 @@ function buscarAlojamientosGaleria(desde) {
         Alojamiento.find({ 'propiedadesAlojamiento.estadoAlojamiento': 'Disponible', 'propiedadesAlojamiento.estadoPublicacionAlojamiento': 'Aceptado' })
             .populate('estudiante', 'role email')
             .skip(desde)
-            .limit(5)
+            //.limit(desde)
             .exec((err, alojamientosGaleria) => {
                 if (err) {
                     reject('Erro al cargar alojamientos');
