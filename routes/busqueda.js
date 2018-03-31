@@ -33,7 +33,7 @@ app.get('/todo/:busqueda', (req, res, next) => {
 });
 
 app.get('/admin/alojamientos/:termino', (req, res) => {
-    var busqueda = req.params.busqueda;
+    var busqueda = req.params.termino;
     //Expresion regular para poder buscar sin que se afecteen mayusculas y minusculas
     var regex = new RegExp(busqueda, 'i');
     var desde = req.query.desde || 0;
@@ -42,7 +42,7 @@ app.get('/admin/alojamientos/:termino', (req, res) => {
         .then(alojamientos => {
             res.status(202).json({
                 ok: true,
-                mensaje: 'Petición realizada correctamente',
+                mensaje: 'Se busco en alojamientos con palabra' + busqueda,
                 alojamientos: alojamientos
             }); // Todo se hizo corriendo correctamente
         });
